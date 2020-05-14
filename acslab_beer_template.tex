@@ -1,0 +1,64 @@
+\documentclass{../semdoc}
+% Template: $Id: t01_txt.tex,v 1.7 2000/05/23 12:13:37 bless Exp $
+% -----------------------------------------------------------------------------
+%epstopdf ermöglicht, dass eps-Dateien durch pdflatex in windows eingebunden werden können
+\usepackage{epstopdf}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{cleveref}
+
+
+% Credits to https://latexcolor.com/ <3
+\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+
+\newcommand*{\Comment}[1]{\hfill\makebox[3.0cm][l]{#1}}%
+\lstset{language=bash,
+    backgroundcolor=\color{anti-flashwhite},
+    commentstyle=\color{amaranth},
+    %keywordstyle=\color{airforceblue},
+    basicstyle=\ttfamily\small,
+	captionpos=b,
+	breaklines=true, 
+  	escapechar=\&% char to escape out of listings and back to LaTeX
+}
+
+% Report Praktikum 
+% -----------------------------------------------------------------------------
+% Kommentare beginnen mit einem %-Zeichen
+\docbegin
+% --> Oberhalb der Linie bitte nichts ändern.
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% Stellen, an denen etwas geaendert werden soll, sind wie hier gekennzeichnet.
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+
+%
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% --> Bitte den Titel des Beitrages in die nächste Zeile eintragen:
+\title{Title of the Lab}
+%
+% --> ... und den Namen des Autors:
+\author{Carolin Beer - 1842604}
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+% -----------------------------------------------------------------------------
+
+% Nicht ändern!
+\event{Access Control Systems Lab\\}
+\term{Sommersemester 2020}
+\supervisor{Prof. Dr. Hannes Hartenstein, Jan Grashöfer, Florian Jacob}
+
+%
+%
+\maketitle
+
+\section{Introduction}
+
+
+ 
+\section{Discussion and Conclusion}
+
+
+\docend
+%%% end of document
