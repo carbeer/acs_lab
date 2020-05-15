@@ -1,0 +1,359 @@
+\documentclass{semdoc}
+% Template: $Id: t01_txt.tex,v 1.7 2000/05/23 12:13:37 bless Exp $
+% -----------------------------------------------------------------------------
+%epstopdf ermöglicht, dass eps-Dateien durch pdflatex in windows eingebunden werden können
+\usepackage{epstopdf}
+\usepackage{listings, xcolor}
+\usepackage{cleveref}
+\usepackage[backend=biber]{biblatex}
+
+\addbibresource{lab.bib}
+
+% Credits to https://latexcolor.com/ <3
+\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+
+\newcommand*{\Comment}[1]{\hfill\makebox[3.0cm][l]{#1}}%
+\lstset{
+    backgroundcolor=\color{anti-flashwhite},
+    commentstyle=\color{amaranth},
+    keywordstyle=\color{airforceblue},
+    basicstyle=\ttfamily\small,
+	captionpos=b,
+	breaklines=true, 
+  	escapechar=\&% char to escape out of listings and back to LaTeX
+}
+
+\lstdefinelanguage{Go}{
+  % Keywords as defined in the BNF
+  morekeywords=[1]{break,default,func,interface,%
+    case,defer,go,map,struct,chan,else,goto,package,%
+    switch,const,fallthrough,if,range,type,continue,%
+    for,import,return,var,select},
+  % Special identifiers, builtin functions
+  morekeywords=[2]{make,new,nil,len,cap,copy,complex,%
+    real,imag,panic,recover,print,println,iota,close,%
+    closed,_,true,false,append,delete},
+  % Basic types
+  morekeywords=[3]{%
+    string,int,uint,uintptr,double,float,byte,%
+    int8,int16,int32,int64,int128,%
+    uint8,uint16,uint32,uint64,uint128,%
+    float32,float64,complex64,complex128,%
+    rune},
+  % Strings : "toto", 'toto', `toto`
+  morestring=[b]{"},
+  morestring=[b]{'},
+  morestring=[b]{`},
+  % Comments : /* comment */ and // comment
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  % Options
+  sensitive=true
+}
+
+% Report Praktikum 
+% -----------------------------------------------------------------------------
+% Kommentare beginnen mit einem %-Zeichen
+\docbegin
+% --> Oberhalb der Linie bitte nichts ändern.
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% Stellen, an denen etwas geaendert werden soll, sind wie hier gekennzeichnet.
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+
+%
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% --> Bitte den Titel des Beitrages in die nächste Zeile eintragen:
+\title{Reference Monitor (SELinux)}
+%
+% --> ... und den Namen des Autors:
+\author{Carolin Beer - 1842604}
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+% -----------------------------------------------------------------------------
+
+% Nicht ändern!
+\event{Access Control Systems Lab\\}
+\term{Sommersemester 2020}
+\supervisor{Prof. Dr. Hannes Hartenstein, Jan Grashöfer, Florian Jacob}
+
+%
+%
+\maketitle
+
+\section{Introduction}
+As part of this report, we are developing deeper insights into the understanding of inner workings of the SELinux Reference Monitor as well as custom policy modules. 
+
+
+\section{The ACS-Tool}
+\label{acs-tool}
+To learn more about the access restrictions with SELinux, we start off by creating a small executable that tries to read the first line of a given file. 
+For this purpose, we use Golang which can be easily compiled to a binary. In \cref{code}, we can see the source code. 
+% a)  Write a tool that takes a filename as a parameter and prints out the file’s first line. Note:
+% You are free to choose your favorite programming language. For the sake of simplicity, do
+% not use an interpreted language but compile a binary.
+\begin{lstlisting}[language=Go, caption={Source code of \texttt{freader.go} which reads the first line of a given file and writes it to \texttt{stdout}.}, label={code}]
+package main
+
+import "log"
+import "bufio"
+import "os"
+
+func main() {
+    fname := os.Args[1]
+    
+    f, err := os.Open(fname)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    defer func() {
+        if err = f.Close(); err != nil {
+            log.Fatal(err)
+        }
+    }()
+
+    s := bufio.NewScanner(f)
+    s.Scan()
+    log.Println(s.Text())
+}
+\end{lstlisting}
+
+Next, we compile the code which leaves us with a executable named \texttt{freader}, and create a dummy text file named \texttt{acs.txt} for testing purposes as shown in \cref{init}.
+
+
+\begin{lstlisting}[caption={Building the \texttt{freader} script and creating the \texttt{acs.txt} file.}, label={init}]
+$ go build freader.go 
+$ echo "Hello ACS-Lab!" > acs.txt
+\end{lstlisting}
+
+% b) Run the ACS-Tool on the acs.txt -file as well as on /etc/shadow and explain the result.
+Now, we are all set up to run a first test by calling our \texttt{freader} executable with the \texttt{acs.txt} file. 
+As expected, our executable reads the first line and writes it to the command line.
+Next, we try to read the contents of \texttt{/etc/shadow} which is used to store password hashes. 
+Luckily, the \texttt{freader} binary is unable to read the contents of this file. 
+Taking a look at the output of the \texttt{ls -lZ} commands in \cref{1b}, the reason for this behavior becomes clear.
+The Discretionary Access Control (DAC) allows read access to the \texttt{acs.txt}, but not for \texttt{/etc/shadow}. 
+The Mandatory Access Control (MAC) implemented by SELinux on top of the DAC does not restrict access of the \texttt{freader} to the \texttt{acs.txt} file any further, therefore it has been able to successfully read the content.
+
+\begin{lstlisting}[caption={Accessing different files using the \texttt{freader} binary.}, label={1b}]
+$ ./freader acs.txt 
+2020/05/11 23:18:25 Hello ACS-Lab!
+$ ./freader /etc/shadow
+2020/05/11 23:20:12 open /etc/shadow: permission denied
+$ ls -lZ acs.txt 
+-rw-r--r--. 1 student vboxsf unconfined_u:object_r:user_home_t:s0 15 May 14 20:45 acs.txt
+$ ls -lZ /etc/shadow
+----------. 1 root root system_u:object_r:shadow_t:s0 1323 May  2 19:52 /etc/shadow
+$ ls -lZ freader 
+-rwxrwx---. 1 student vboxsf unconfined_u:object_r:user_home_t:s0 1946890 May 11 23:17 freader
+\end{lstlisting}
+
+\section{Writing a Policy}
+In the following, we learn about policy modules, analyze their basic components, and put them to use.
+
+\subsection{Understanding the Components of a Policy Module}
+% a) Explain the purpose of the different files ( acs.te , acs.if and acs.fc ).
+The SELinux project maintains a \emph{reference policy} which can be used as-is for various systems or may serve as a basis for system administrators to build their own custom policy \cite{ref-policy}.
+
+The reference policy is designed in a modular fashion, meaning that custom modules for applications can be added where needed.
+Modules generally contain three different kinds of files \cite{Hertzog2015}:
+
+\begin{itemize}
+  \item \texttt{.te}: type enforcement file, defines the rules of the module. It contains the core logic and is mandatory in any module. 
+  \item \texttt{.fc}: file context file, specifies the types that are assigned to files that are addressed by the module. Optional.
+  \item \texttt{.if}: interface file, contains the \emph{interfaces} of the module. These are used for interaction between different modules. Optional. 
+\end{itemize}
+
+% b) Explain the acs.te file line by line. Hint: If you do not know the effects of a specific line,
+% comment out that single line, continue with the task and analyze the consequences of that
+% line missing.
+
+In \cref{acs-te} an example of a type enforcement file is shown.
+To improve our understanding of this component of the policy module, we will work through it line by line.
+
+\begin{lstlisting}[caption={Contents of the \texttt{acs.te} type enforcement file.}, label={acs-te}, numbers=left]
+policy_module(acs, 1.0.0)
+
+gen_require(`
+	role unconfined_r;
+	type unconfined_t;
+')
+
+type acs_t;
+type acs_exec_t;
+
+domain_type(acs_t)
+domain_entry_file(acs_t, acs_exec_t)
+
+role unconfined_r types acs_t;
+type_transition unconfined_t acs_exec_t : process acs_t;
+
+userdom_use_user_terminals(acs_t)
+
+type acs_file_t;
+files_type(acs_file_t)
+\end{lstlisting}
+
+In the first line of the file, the name and version number of the module are stated.
+This is a requirement for all modules.
+
+The \texttt{gen\_require} macro keyword is used to specify the set of external policy components, the role \texttt{unconfined\_r} and the type \texttt{unconfined\_t}, which are required, but not defined by the module itself.
+
+This is followed by declarations of two new types \texttt{acs\_t} and \texttt{acs\_exec\_t}.
+By calling \texttt{domain\_type()} on the newly created type \texttt{acs\_t}, we mark it as domain type. 
+
+Subsequently, the \texttt{acs\_t} domain is assigned an entry point using \texttt{domain\_entry\_file()}.
+In this case, this is the \texttt{acs\_exec\_t} type.
+
+Line 14 specifies that the role \texttt{unconfined\_r} is allowed to assume our new domain \texttt{acs\_t}.
+
+With the given \texttt{type\_transition} in line 15, a process transition, as indicated by the \texttt{process} object class following the colon, is defined.
+It denotes the transition that a process with some source type, here \texttt{unconfined\_t} should undergo when executing an object of some target type, here \texttt{acs\_exec\_t}. 
+The type of the process after the transition, if allowed by the policy, is called the default type. 
+In the given example, this is the \texttt{acs\_t} type.
+    
+\texttt{userdom\_use\_user\_terminals()} is an interface defined by the reference policy with a domain as argument. It allows the given domain, here \texttt{act\_t}, to interact with the user through a terminal.
+It is therefore mainly needed for interactive applications. 
+
+Lastly, a new type \texttt{acs\_file\_t} is declared and made applicable to files using \texttt{files\_type()}. 
+
+\subsection{Loading and Using a Custom Policy Module}
+% Compile the policy module (use make to run the linked Makefile) and load it into SELinux
+% ( semanage module -a acs.pp ). Using semanage you can verify that the module is loaded successfully.
+% Now, label the executable with the new type label ( acs_exec_t ) using chcon .
+Now after compiling the module with \texttt{make} and loading the policy into SELinux using \texttt{semanage}, as shown in \cref{make}, we can make use of our new labels.
+
+\begin{lstlisting}[caption={Compiling the \texttt{acs} policy and loading it into SELinux.}, label={make}]
+$ make 
+Compiling targeted acs module
+/usr/bin/checkmodule:  loading policy configuration from tmp/acs.tmp
+/usr/bin/checkmodule:  policy configuration loaded
+/usr/bin/checkmodule:  writing binary representation (version 17) to tmp/acs.mod
+Creating targeted acs.pp policy package
+rm tmp/acs.mod.fc tmp/acs.mod
+$ sudo semanage module -a acs.pp
+$ sudo semanage module -l | grep "acs"
+acs                       400       pp    
+\end{lstlisting}
+
+We assign a new label to the \texttt{freader} binary using \texttt{chcon}. 
+In \cref{chcon}, we can see that the type change was successful, as the output of \texttt{ls -lZ} shows the new type \texttt{acs\_exec\_t} in the security context.
+Trying to run the \texttt{freader} on the \texttt{acs.txt} file now yields a permission error, too.
+
+\begin{lstlisting}[caption={Changing the label of the \texttt{freader} binary.}, label={chcon}]
+$ ls -lZ freader 
+-rwxrwx---. 1 student vboxsf unconfined_u:object_r:user_home_t:s0 1946890 May 11 23:17 freader
+$ sudo chcon -t acs_exec_t ./freader 
+$ ls -lZ freader 
+-rwxrwx---. 1 student vboxsf unconfined_u:object_r:acs_exec_t:s0 1946890 May 11 23:17 freader
+$ ./freader acs.txt 
+2020/05/14 20:57:48 open acs.txt: permission denied
+\end{lstlisting}
+
+% c) Execute your ACS-Tool and explain why you cannot access the test file anymore.
+Based on the type transition rule that has been specified in our policy module, the process transitions to the \texttt{acs\_t} type when executing the \texttt{freader} binary of type \texttt{acs\_exec\_t}. 
+
+Since the newly defined \texttt{acs\_t} type only possesses the very minimal default privileges, it is not granted read access to our \texttt{acs.txt} file anymore.
+
+\subsection{Modifying the Type Enforcement File}
+Now, we need to modify the type enforcement file to elevate the privileges of the \texttt{acs\_t} type to make our executable functional again.
+Following the philosophy of SELinux we also want to avoid giving applications more privileges than needed. 
+Therefore, to prevent the executable from accessing other files on the system, we use the dedicated \texttt{acs\_file\_t} type to label files that shall be accessible by the \texttt{freader}.
+
+% d) Edit the ACS policy module to allow programs in the acs_t domain to list directories (search
+% files) and read files labeled with the acs_file_t type. Label the acs.txt file accordingly
+% and use the ACS-Tool to access it.
+
+
+\begin{lstlisting}[caption={Additions to the \texttt{acs.te} file.}, label={te-new}, numbers=left]
+gen_require(`
+        ; [...]	
+        type user_home_t;
+')
+; [...]
+allow acs_t acs_file_t:file {open read};
+allow acs_t user_home_t:dir search;
+\end{lstlisting}
+
+In \cref{te-new} the required additions to the \texttt{acs.te} are illustrated. 
+Line 6 allows processes of type \texttt{acs\_t} to read and open files of type \texttt{acs\_file\_t}. 
+For the executable to successfully find the file, it also requires search access to the directory. 
+This is specified in line 7.
+Since the \texttt{user\_home\_t} directory type, which serves as default type of directories on the home path, was not previously part of the type enforcement file, we need to add it to the \texttt{gen\_require} block.
+
+Now it remains to relabel the \texttt{acs.txt} file with the \texttt{acs\_file\_t} type using \texttt{chcon}, as shown in \cref{relabel-txt}.
+Trying to run the \texttt{freader} on it now yields the file content, as desired.
+
+\begin{lstlisting}[caption={Changing the label of the \texttt{acs.txt} file.}, label={relabel-txt}]
+$ sudo chcon -t acs_file_t acs.txt 
+$ ./freader acs.txt
+2020/05/14 23:57:26 Hello ACS-Lab!
+\end{lstlisting}
+
+
+% After changing the label of the acs.txt file, one could use the ACS-Tool to access the file. Relabel
+% using the acs_file_t type. Warning: Make sure to restore the default label using
+% restorecon after your test.
+
+\subsection{Mandatory and Discretionary Access Control}
+% e) Explain why it is still not possible to use the ACS-Tool to access /etc/shadow .
+
+Recalling the experiment from \cref{acs-tool}, we could now try to relabel the \texttt{/etc/shadow} file as well and see whether we can read from it.
+
+\begin{lstlisting}[caption={Relabeling \texttt{/etc/shadow} and trying to read it with the binary.}, label={shadow}]
+$ sudo chcon -t acs_file_t /etc/shadow
+$ ls -lZ /etc/shadow
+----------. 1 root root system_u:object_r:acs_file_t:s0 1323 May  2 19:52 /etc/shadow
+$ ./freader /etc/shadow
+2020/05/15 11:10:58 open /etc/shadow: permission denied
+$ restorecon /etc/shadow
+\end{lstlisting}
+
+As we can see from \cref{shadow}, it is still not possible to access \texttt{/etc/shadow} after the relabel operation.
+The reason for this is simple. 
+SELinux does not substitute the DAC mechanisms embedded in Linux, but works on top of them.
+This means that the SELinux MAC policies are only ever evaluated, when the DAC would grant access. 
+As we can see from the output of \texttt{ls -lZ}, the DAC prevents read access already. 
+Thus, changes in the policy do not have any effect on the access rights of the \texttt{freader} to the \texttt{/etc/shadow} in this case.
+
+\subsection{Putting the Given Example Into Perspective}
+% f) Provide a brief discussion on whether or not the ACS-Tool example is realistic.
+While our hands-on part has clearly shown the impact of policies, it only partially represents how application access rights are configured in reality.
+The reference policy already provides a large set of labels and interfaces which can be used off the shelf and are more handy than configuring label access rights by hand. 
+For instance, if we were to create a new file type for logging purposes, we could simply use the interface \texttt{logging\_log\_file()} to automatically assign rights to relevant logging types. 
+However, for customized applications it may still be useful, to explicitly assign rights, as we did in our example.
+
+\section{SELinux as Reference Monitor}
+% 1. Evaluable → small enough to be subject to analysis
+% 2. Always invoked → no alterative access method
+% 3. Tamper-proof → mechanism cannot be altered
+% Furthermore, the extended Reference Monitor concepts have been introduced (c.f. Lecture 1),
+% i.e. Authorization Database, Monitor Interface and Audit Trails.
+
+% a) Map the extended Reference Monitor concepts to their Linux counterpart.
+
+We now take a look at the extended Reference Monitor concepts – namely the authorization database, monitor interface and audit trails – and map them to their Linux counterpart.
+
+The monitor interface in Linux consists of \emph{system calls} that are used to look up privileges whenever a process requests access to some resource.
+By default, the authorization in Linux is based solely on DAC. The resulting authorization database is represented by \emph{inodes} storing \emph{access control matrices}. They contain the group and owner of a file, and the corresponding permissions, i.\,e. read, write or modify for regular files, depending on the user type. 
+Lastly, the file \texttt{/var/log/audit/audit.log} contains the audit trails.
+With Linux Security Modules (LSM), access control can be extended. The corresponding implementations, such as SELinux, are integrated through \emph{hooks}.
+\cite{Jaeger2008}
+
+% b) Comment on whether you think SELinux complies with the Reference Monitor requirements.
+
+Considering the three reference monitor implementation requirements of being \emph{evaluable}, \emph{always invoked} and \emph{tamper-proof}, SELinux seems to be compliant with all of them. 
+While it is in general difficult to formally verify the correctness of security enforcement mechanisms, SELinux should be easy to test and therefore evaluate, especially due to its modular design. 
+Furthermore, due to the placement of hooks, SELinux is always invoked whenever privileges are requested and granted by DAC.
+Finally, SELinux is tamper-proof because it uses policies that cannot be modified by system users, as opposed to DAC. 
+
+\section{Discussion and Conclusion}
+Throughout this report we have gained insights into the inner workings of SELinux policy modules. In a hands-on part, we have learnt how labels and affect access privileges and how SELinux is entangled with DAC. 
+The practical part was rounded off with a brief theoretical part about the concept of a reference monitor.
+
+\printbibliography
+
+\docend
+%%% end of document

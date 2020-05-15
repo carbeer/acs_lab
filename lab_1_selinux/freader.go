@@ -6,7 +6,6 @@ import "os"
 
 func main() {
     fname := os.Args[1]
-    log.Print(fname)
     
     f, err := os.Open(fname)
     if err != nil {
