@@ -1,4 +1,4 @@
-\documentclass{../semdoc}
+\documentclass{semdoc}
 % Template: $Id: t01_txt.tex,v 1.7 2000/05/23 12:13:37 bless Exp $
 % -----------------------------------------------------------------------------
 %epstopdf ermöglicht, dass eps-Dateien durch pdflatex in windows eingebunden werden können
@@ -6,6 +6,8 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{cleveref}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{lab.bib}
 
 
 % Credits to https://latexcolor.com/ <3
@@ -16,7 +18,7 @@
 \lstset{language=bash,
     backgroundcolor=\color{anti-flashwhite},
     commentstyle=\color{amaranth},
-    %keywordstyle=\color{airforceblue},
+    keywordstyle=\color{airforceblue},
     basicstyle=\ttfamily\small,
 	captionpos=b,
 	breaklines=true, 
@@ -26,7 +28,7 @@
 % Report Praktikum 
 % -----------------------------------------------------------------------------
 % Kommentare beginnen mit einem %-Zeichen
-\docbegin
+\begin{document}
 % --> Oberhalb der Linie bitte nichts ändern.
 % ---------------------------------------------------------------------------
 % \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
@@ -55,10 +57,11 @@
 
 \section{Introduction}
 
-
+\cite{Hertzog2015}
  
 \section{Discussion and Conclusion}
 
+\printbibliography
 
-\docend
+\end{document}
 %%% end of document

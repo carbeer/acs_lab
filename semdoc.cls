@@ -27,7 +27,7 @@
 
 \ProvidesClass{semdoc}[2000/05/22 Seminarbeitrag] 
 \LoadClass[a4paper,11pt,twoside]{article} % diese Klasse basiert auf ``article''
-\RequirePackage{ngerman}[1998/07/08] % (v2.5e) Neue Rechtschreibung 
+% \RequirePackage{ngerman}[1998/07/08] % (v2.5e) Neue Rechtschreibung 
 \usepackage[utf8]{inputenc}   % Eingabe nach UTF8
                               % siehe Emacs: iso-accents-mode
 \usepackage[final]{graphicx}  % um Graphiken einzubinden (Standard Graphik-Paket)
@@ -223,7 +223,7 @@
 %% Einstellungen für Verzeichnisse
 \setcounter{secnumdepth}{3} % Numerierung auch für \subsubsection
 \setcounter{tocdepth}{2}    % Nur Autor und Titel, keine sections etc.
-\bibliographystyle{itmalpha}  % Für bibtex
+\bibliographystyle{plain}  % Für bibtex
 
 % Für float Paket
 %\floatstyle{ruled}
@@ -367,8 +367,8 @@
   \null\vfil
   \vskip 60\p@
   \begin{center}%
-    	{\LARGE \@title \par}%
-    	\vskip 3em%
+      {\LARGE \@title \par}%
+      \vskip 3em%
     {\large
      \lineskip .75em%
       \begin{tabular}[t]{c}%
@@ -445,12 +445,12 @@
   \null
   \vskip 2em%
   \begin{center}%
-  	{\Large \@event \par}
-%  	\vspace*{0.2cm}
-	{\@term \par}
-	\vspace*{0.5cm}
-    	{\LARGE \@title \par}%
-    	\vskip 0.5cm%
+    {\Large \@event \par}
+%   \vspace*{0.2cm}
+  {\@term \par}
+  \vspace*{0.5cm}
+      {\LARGE \@title \par}%
+      \vskip 0.5cm%
     {\large
 %     \lineskip .75em%
       \begin{tabular}[t]{c}%
@@ -458,10 +458,10 @@
       \end{tabular}\par}%
       \vskip 0.5cm%
       %{\begin{tabular}{p{.75\linewidth}}
-	  \begin{tabular}[t]{c}
-				\@supervisor\\
-		    Forschungsgruppe Dezentrale Systeme und Netzdienste\\
-		    Karlsruher Institut für Technologie (KIT)
+    \begin{tabular}[t]{c}
+        \@supervisor\\
+        Forschungsgruppe Dezentrale Systeme und Netzdienste\\
+        Karlsruher Institut für Technologie (KIT)
      \end{tabular} \par
   \end{center}%
   \par
@@ -501,29 +501,7 @@
 \fi
 }
 
-\let\oldaddtocontents\addtocontents
-\long\def\addtocontents#1#2{%
- \oldaddtocontents{#1}{#2}
-   \edef\ext{#1}
-   \@loforlotfalse
-   \ifx\ext\ext@figure
-      \@loforlottrue
-      \global\@tmplofexiststrue
-   \fi
-   \ifx\ext\ext@table
-      \@loforlottrue
-      \global\@tmplotexiststrue
-   \fi
-   \if@loforlot
-      \@ifundefined{@my#1} \relax
-      {
-        %\typeout{** Writing temporary #1 **}
-        \protected@write{\csname @my#1\endcsname}
-        {\let\label\@gobble \let\index\@gobble \let\glossary\@gobble}%
-        {#2}
-      }
-   \fi
-}
+
 
 \def\tmplistoffigures{%
 \if@tmplofexists
