@@ -1,0 +1,1916 @@
+{
+  "permissionassignment": [
+    {
+      "pa": [
+        "financial", 
+        "process", 
+        "executive", 
+        "analytics", 
+        "design", 
+        "human", 
+        "strategy", 
+        "technology", 
+        "information", 
+        "knowledge", 
+        "privacy", 
+        "creative", 
+        "innovation", 
+        "administrative", 
+        "gaming", 
+        "product", 
+        "business", 
+        "web", 
+        "visionary", 
+        "commercial", 
+        "visibility", 
+        "restructuring", 
+        "data", 
+        "customer", 
+        "science", 
+        "experience", 
+        "communications", 
+        "reputation"
+      ], 
+      "name": "Afghanistan"
+    }, 
+    {
+      "pa": [
+        "gaming", 
+        "product", 
+        "diversity", 
+        "analytics", 
+        "compliance", 
+        "visibility", 
+        "strategy", 
+        "sustainability", 
+        "operating", 
+        "digital", 
+        "financial", 
+        "administrative"
+      ], 
+      "name": "Aland Islands"
+    }, 
+    {
+      "pa": [
+        "diversity", 
+        "knowledge", 
+        "communications", 
+        "process", 
+        "brand", 
+        "commercial", 
+        "visibility", 
+        "research", 
+        "sustainability", 
+        "restructuring", 
+        "human", 
+        "innovation"
+      ], 
+      "name": "Albania"
+    }, 
+    {
+      "pa": [
+        "human", 
+        "process", 
+        "design", 
+        "learning", 
+        "strategy", 
+        "investment", 
+        "web", 
+        "knowledge", 
+        "privacy", 
+        "creative", 
+        "content", 
+        "product", 
+        "diversity", 
+        "business", 
+        "marketing", 
+        "visionary", 
+        "visibility", 
+        "genealogical", 
+        "services", 
+        "customer", 
+        "science", 
+        "communications", 
+        "security"
+      ], 
+      "name": "Algeria"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "learning", 
+        "human", 
+        "research", 
+        "technology", 
+        "web", 
+        "creative", 
+        "content", 
+        "strategy", 
+        "digital", 
+        "innovation", 
+        "gaming", 
+        "product", 
+        "diversity", 
+        "risk", 
+        "business", 
+        "marketing", 
+        "brand", 
+        "visionary", 
+        "restructuring", 
+        "operating", 
+        "services", 
+        "data", 
+        "science", 
+        "experience", 
+        "communications", 
+        "reputation"
+      ], 
+      "name": "American Samoa"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "human", 
+        "technology", 
+        "investment", 
+        "information", 
+        "knowledge", 
+        "privacy", 
+        "research", 
+        "content", 
+        "diversity", 
+        "risk", 
+        "business", 
+        "brand", 
+        "visionary", 
+        "commercial", 
+        "visibility", 
+        "sustainability", 
+        "restructuring", 
+        "operating", 
+        "services", 
+        "science", 
+        "experience"
+      ], 
+      "name": "AndorrA"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "executive", 
+        "technology", 
+        "investment", 
+        "strategy", 
+        "content", 
+        "innovation", 
+        "diversity", 
+        "risk", 
+        "marketing", 
+        "brand", 
+        "commercial", 
+        "visibility", 
+        "sustainability", 
+        "operating", 
+        "services", 
+        "data", 
+        "genealogical", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Angola"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "data", 
+        "compliance", 
+        "content", 
+        "sustainability", 
+        "reputation", 
+        "human", 
+        "technology", 
+        "investment"
+      ], 
+      "name": "Anguilla"
+    }, 
+    {
+      "pa": [
+        "process", 
+        "science", 
+        "executive", 
+        "experience", 
+        "data", 
+        "content", 
+        "genealogical", 
+        "design", 
+        "human", 
+        "digital", 
+        "services", 
+        "operating", 
+        "strategy", 
+        "administrative", 
+        "investment"
+      ], 
+      "name": "Antarctica"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "executive", 
+        "analytics", 
+        "creative", 
+        "web", 
+        "privacy", 
+        "strategy", 
+        "digital", 
+        "gaming", 
+        "diversity", 
+        "business", 
+        "information", 
+        "marketing", 
+        "visionary", 
+        "visibility", 
+        "genealogical", 
+        "services", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "communications", 
+        "reputation"
+      ], 
+      "name": "Antigua and Barbuda"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "visionary", 
+        "knowledge", 
+        "process", 
+        "administrative", 
+        "compliance", 
+        "strategy", 
+        "sustainability", 
+        "restructuring", 
+        "design", 
+        "operating", 
+        "creative", 
+        "data"
+      ], 
+      "name": "Argentina"
+    }, 
+    {
+      "pa": [
+        "science", 
+        "executive", 
+        "analytics", 
+        "learning", 
+        "digital", 
+        "data", 
+        "investment", 
+        "administrative"
+      ], 
+      "name": "Armenia"
+    }, 
+    {
+      "pa": [
+        "process", 
+        "analytics", 
+        "design", 
+        "human", 
+        "creative", 
+        "technology", 
+        "investment", 
+        "web", 
+        "knowledge", 
+        "strategy", 
+        "content", 
+        "digital", 
+        "product", 
+        "diversity", 
+        "information", 
+        "marketing", 
+        "visionary", 
+        "commercial", 
+        "genealogical", 
+        "restructuring", 
+        "operating", 
+        "services", 
+        "data", 
+        "customer", 
+        "science", 
+        "experience", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Aruba"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "information", 
+        "product", 
+        "visionary", 
+        "risk", 
+        "business", 
+        "privacy", 
+        "process", 
+        "marketing", 
+        "brand", 
+        "executive", 
+        "commercial", 
+        "experience", 
+        "genealogical", 
+        "restructuring", 
+        "reputation", 
+        "operating", 
+        "learning", 
+        "compliance", 
+        "administrative"
+      ], 
+      "name": "Australia"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "gaming", 
+        "science", 
+        "executive", 
+        "innovation", 
+        "experience", 
+        "creative", 
+        "restructuring", 
+        "reputation", 
+        "visibility", 
+        "learning", 
+        "digital", 
+        "security", 
+        "data"
+      ], 
+      "name": "Austria"
+    }, 
+    {
+      "pa": [
+        "operating"
+      ], 
+      "name": "Azerbaijan"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "financial", 
+        "process", 
+        "compliance", 
+        "experience", 
+        "research", 
+        "communications"
+      ], 
+      "name": "Bahamas"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "genealogical", 
+        "visionary", 
+        "knowledge", 
+        "privacy", 
+        "marketing", 
+        "brand", 
+        "compliance", 
+        "experience", 
+        "creative", 
+        "content", 
+        "administrative", 
+        "data", 
+        "learning", 
+        "innovation", 
+        "services", 
+        "strategy", 
+        "technology", 
+        "risk"
+      ], 
+      "name": "Bahrain"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "web", 
+        "learning", 
+        "information", 
+        "process", 
+        "brand", 
+        "compliance", 
+        "strategy", 
+        "genealogical", 
+        "restructuring", 
+        "reputation", 
+        "operating", 
+        "human", 
+        "administrative", 
+        "investment"
+      ], 
+      "name": "Bangladesh"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "diversity", 
+        "knowledge", 
+        "business", 
+        "executive", 
+        "research", 
+        "analytics", 
+        "learning", 
+        "security"
+      ], 
+      "name": "Barbados"
+    }, 
+    {
+      "pa": [
+        "information", 
+        "compliance", 
+        "sustainability", 
+        "executive", 
+        "commercial", 
+        "creative", 
+        "communications", 
+        "restructuring", 
+        "reputation", 
+        "gaming", 
+        "data", 
+        "research"
+      ], 
+      "name": "Belarus"
+    }, 
+    {
+      "pa": [
+        "information", 
+        "product", 
+        "diversity", 
+        "knowledge", 
+        "business", 
+        "sustainability", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "research", 
+        "analytics", 
+        "operating", 
+        "web", 
+        "human", 
+        "marketing", 
+        "services", 
+        "data", 
+        "administrative"
+      ], 
+      "name": "Belgium"
+    }, 
+    {
+      "pa": [
+        "human", 
+        "executive", 
+        "analytics", 
+        "design", 
+        "learning", 
+        "research", 
+        "information", 
+        "privacy", 
+        "strategy", 
+        "product", 
+        "diversity", 
+        "risk", 
+        "brand", 
+        "visibility", 
+        "genealogical", 
+        "restructuring", 
+        "services", 
+        "data", 
+        "science", 
+        "communications", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Belize"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "executive", 
+        "technology", 
+        "web", 
+        "knowledge", 
+        "creative", 
+        "content", 
+        "digital", 
+        "administrative", 
+        "gaming", 
+        "risk", 
+        "business", 
+        "marketing", 
+        "brand", 
+        "visibility", 
+        "genealogical", 
+        "operating", 
+        "services", 
+        "data", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "communications", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Benin"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "risk", 
+        "business", 
+        "information", 
+        "process", 
+        "data", 
+        "commercial", 
+        "visibility", 
+        "research", 
+        "analytics", 
+        "design", 
+        "learning", 
+        "digital", 
+        "services", 
+        "operating", 
+        "strategy", 
+        "technology"
+      ], 
+      "name": "Bermuda"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "gaming", 
+        "genealogical", 
+        "privacy", 
+        "science", 
+        "experience", 
+        "research", 
+        "content", 
+        "analytics", 
+        "restructuring", 
+        "learning", 
+        "digital", 
+        "creative"
+      ], 
+      "name": "Bhutan"
+    }, 
+    {
+      "pa": [
+        "learning", 
+        "process", 
+        "executive", 
+        "human", 
+        "technology", 
+        "investment", 
+        "web", 
+        "privacy", 
+        "innovation", 
+        "strategy", 
+        "content", 
+        "digital", 
+        "gaming", 
+        "product", 
+        "diversity", 
+        "business", 
+        "marketing", 
+        "brand", 
+        "visionary", 
+        "visibility", 
+        "sustainability", 
+        "services", 
+        "data", 
+        "customer", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "security"
+      ], 
+      "name": "Bolivia"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "process", 
+        "executive", 
+        "analytics", 
+        "technology", 
+        "information", 
+        "knowledge", 
+        "privacy", 
+        "creative", 
+        "diversity", 
+        "risk", 
+        "business", 
+        "web", 
+        "brand", 
+        "genealogical", 
+        "restructuring", 
+        "operating", 
+        "services", 
+        "data", 
+        "customer", 
+        "compliance", 
+        "experience", 
+        "security"
+      ], 
+      "name": "Bosnia and Herzegovina"
+    }, 
+    {
+      "pa": [
+        "diversity", 
+        "compliance", 
+        "experience", 
+        "sustainability", 
+        "restructuring", 
+        "visibility", 
+        "innovation", 
+        "security"
+      ], 
+      "name": "Botswana"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "human", 
+        "design", 
+        "learning", 
+        "strategy", 
+        "research", 
+        "web", 
+        "creative", 
+        "content", 
+        "product", 
+        "business", 
+        "information", 
+        "brand", 
+        "visionary", 
+        "commercial", 
+        "visibility", 
+        "genealogical", 
+        "data", 
+        "customer", 
+        "sustainability", 
+        "compliance", 
+        "communications", 
+        "security"
+      ], 
+      "name": "Bouvet Island"
+    }, 
+    {
+      "pa": [
+        "visionary", 
+        "financial", 
+        "knowledge", 
+        "marketing", 
+        "executive", 
+        "commercial", 
+        "genealogical", 
+        "reputation", 
+        "digital", 
+        "security", 
+        "investment"
+      ], 
+      "name": "Brazil"
+    }, 
+    {
+      "pa": [
+        "genealogical", 
+        "brand", 
+        "reputation", 
+        "commercial"
+      ], 
+      "name": "British Indian Ocean Territory"
+    }, 
+    {
+      "pa": [
+        "science", 
+        "web", 
+        "risk", 
+        "privacy", 
+        "marketing", 
+        "brand", 
+        "visibility", 
+        "creative", 
+        "analytics", 
+        "operating", 
+        "human", 
+        "communications", 
+        "services", 
+        "design", 
+        "technology", 
+        "data", 
+        "knowledge"
+      ], 
+      "name": "Brunei Darussalam"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "human", 
+        "process", 
+        "analytics", 
+        "learning", 
+        "creative", 
+        "information", 
+        "knowledge", 
+        "research", 
+        "innovation", 
+        "administrative", 
+        "gaming", 
+        "product", 
+        "business", 
+        "marketing", 
+        "commercial", 
+        "sustainability", 
+        "operating", 
+        "services", 
+        "data", 
+        "genealogical", 
+        "compliance", 
+        "experience", 
+        "communications", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Bulgaria"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "human", 
+        "research", 
+        "technology", 
+        "information", 
+        "knowledge", 
+        "privacy", 
+        "strategy", 
+        "content", 
+        "innovation", 
+        "administrative", 
+        "product", 
+        "diversity", 
+        "risk", 
+        "business", 
+        "web", 
+        "marketing", 
+        "visionary", 
+        "commercial", 
+        "visibility", 
+        "genealogical", 
+        "restructuring", 
+        "operating", 
+        "sustainability", 
+        "compliance", 
+        "experience", 
+        "security"
+      ], 
+      "name": "Burkina Faso"
+    }, 
+    {
+      "pa": [], 
+      "name": "Burundi"
+    }, 
+    {
+      "pa": [
+        "process", 
+        "design", 
+        "learning", 
+        "strategy", 
+        "technology", 
+        "information", 
+        "knowledge", 
+        "privacy", 
+        "innovation", 
+        "research", 
+        "content", 
+        "digital", 
+        "business", 
+        "visionary", 
+        "visibility", 
+        "genealogical", 
+        "services", 
+        "customer", 
+        "sustainability", 
+        "science", 
+        "compliance", 
+        "experience", 
+        "communications", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Cambodia"
+    }, 
+    {
+      "pa": [
+        "science", 
+        "web", 
+        "diversity", 
+        "risk", 
+        "research"
+      ], 
+      "name": "Cameroon"
+    }, 
+    {
+      "pa": [
+        "process", 
+        "analytics", 
+        "learning", 
+        "technology", 
+        "web", 
+        "privacy", 
+        "content", 
+        "digital", 
+        "administrative", 
+        "product", 
+        "diversity", 
+        "brand", 
+        "commercial", 
+        "visibility", 
+        "genealogical", 
+        "services", 
+        "data", 
+        "customer", 
+        "science", 
+        "compliance", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Canada"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "product", 
+        "data", 
+        "compliance", 
+        "innovation", 
+        "technology"
+      ], 
+      "name": "Cape Verde"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "information", 
+        "product", 
+        "risk", 
+        "business", 
+        "communications", 
+        "technology", 
+        "brand", 
+        "commercial", 
+        "experience", 
+        "strategy", 
+        "content", 
+        "sustainability", 
+        "reputation", 
+        "visibility", 
+        "human", 
+        "digital", 
+        "services", 
+        "security", 
+        "research", 
+        "data"
+      ], 
+      "name": "Cayman Islands"
+    }, 
+    {
+      "pa": [
+        "diversity", 
+        "design", 
+        "communications"
+      ], 
+      "name": "Central African Republic"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "genealogical", 
+        "business", 
+        "privacy", 
+        "science", 
+        "visibility", 
+        "content", 
+        "sustainability", 
+        "data"
+      ], 
+      "name": "Chad"
+    }, 
+    {
+      "pa": [
+        "web", 
+        "risk", 
+        "visionary", 
+        "commercial", 
+        "content", 
+        "sustainability", 
+        "restructuring", 
+        "digital", 
+        "innovation", 
+        "knowledge"
+      ], 
+      "name": "Chile"
+    }, 
+    {
+      "pa": [
+        "services", 
+        "data", 
+        "risk"
+      ], 
+      "name": "China"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "process", 
+        "executive", 
+        "analytics", 
+        "design", 
+        "human", 
+        "technology", 
+        "investment", 
+        "knowledge", 
+        "privacy", 
+        "creative", 
+        "digital", 
+        "gaming", 
+        "diversity", 
+        "risk", 
+        "marketing", 
+        "innovation", 
+        "visibility", 
+        "operating", 
+        "services", 
+        "data", 
+        "reputation", 
+        "security"
+      ], 
+      "name": "Christmas Island"
+    }, 
+    {
+      "pa": [
+        "design", 
+        "data"
+      ], 
+      "name": "Cocos (Keeling) Islands"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "web", 
+        "diversity", 
+        "privacy", 
+        "process", 
+        "data", 
+        "brand", 
+        "visionary", 
+        "research", 
+        "analytics", 
+        "gaming", 
+        "reputation", 
+        "design", 
+        "marketing", 
+        "services", 
+        "financial", 
+        "technology"
+      ], 
+      "name": "Colombia"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "web", 
+        "product", 
+        "financial", 
+        "learning", 
+        "privacy", 
+        "technology", 
+        "visionary", 
+        "experience", 
+        "communications", 
+        "reputation", 
+        "design", 
+        "visibility", 
+        "human", 
+        "innovation", 
+        "diversity", 
+        "information", 
+        "administrative"
+      ], 
+      "name": "Comoros"
+    }, 
+    {
+      "pa": [
+        "financial", 
+        "process", 
+        "executive", 
+        "analytics", 
+        "technology", 
+        "information", 
+        "knowledge", 
+        "creative", 
+        "digital", 
+        "administrative", 
+        "product", 
+        "diversity", 
+        "risk", 
+        "business", 
+        "marketing", 
+        "brand", 
+        "visibility", 
+        "genealogical", 
+        "data", 
+        "customer", 
+        "sustainability", 
+        "science", 
+        "communications", 
+        "reputation"
+      ], 
+      "name": "Congo"
+    }, 
+    {
+      "pa": [
+        "customer", 
+        "gaming", 
+        "visionary", 
+        "business", 
+        "process", 
+        "brand", 
+        "compliance", 
+        "visibility", 
+        "strategy", 
+        "sustainability", 
+        "operating", 
+        "services", 
+        "research"
+      ], 
+      "name": "Congo, The Democratic Republic of the"
+    }
+  ], 
+  "rolehierarchy": {
+    "financial": [
+      "product", 
+      "visionary", 
+      "diversity", 
+      "risk", 
+      "visibility"
+    ], 
+    "learning": [
+      "customer"
+    ], 
+    "process": [
+      "web", 
+      "executive", 
+      "financial", 
+      "business"
+    ], 
+    "executive": [
+      "information", 
+      "communications"
+    ], 
+    "analytics": [
+      "information", 
+      "business", 
+      "privacy", 
+      "analytics", 
+      "brand", 
+      "executive", 
+      "research", 
+      "content", 
+      "communications", 
+      "sustainability", 
+      "human", 
+      "services", 
+      "creative"
+    ], 
+    "design": [
+      "analytics"
+    ], 
+    "human": [
+      "visionary"
+    ], 
+    "research": [
+      "technology", 
+      "research"
+    ], 
+    "technology": [
+      "visionary"
+    ], 
+    "investment": [
+      "services", 
+      "marketing", 
+      "brand", 
+      "customer", 
+      "knowledge"
+    ], 
+    "information": [
+      "science", 
+      "information", 
+      "strategy", 
+      "financial", 
+      "research"
+    ], 
+    "knowledge": [
+      "services", 
+      "information", 
+      "commercial", 
+      "business"
+    ], 
+    "privacy": [
+      "process", 
+      "gaming", 
+      "reputation", 
+      "human", 
+      "analytics"
+    ], 
+    "creative": [
+      "science", 
+      "experience", 
+      "web"
+    ], 
+    "content": [
+      "gaming", 
+      "web", 
+      "brand", 
+      "compliance", 
+      "restructuring", 
+      "learning", 
+      "security"
+    ], 
+    "strategy": [], 
+    "innovation": [
+      "communications", 
+      "digital", 
+      "diversity", 
+      "creative"
+    ], 
+    "administrative": [
+      "product", 
+      "science", 
+      "executive", 
+      "genealogical", 
+      "digital", 
+      "services"
+    ], 
+    "gaming": [
+      "visibility", 
+      "content", 
+      "communications", 
+      "design", 
+      "learning", 
+      "innovation"
+    ], 
+    "product": [
+      "product", 
+      "visionary"
+    ], 
+    "visionary": [], 
+    "diversity": [
+      "process", 
+      "security", 
+      "experience", 
+      "business"
+    ], 
+    "risk": [
+      "financial", 
+      "business", 
+      "research"
+    ], 
+    "business": [
+      "marketing", 
+      "innovation", 
+      "commercial", 
+      "research", 
+      "analytics", 
+      "learning", 
+      "digital", 
+      "services"
+    ], 
+    "web": [], 
+    "marketing": [
+      "visibility", 
+      "business"
+    ], 
+    "brand": [
+      "sustainability", 
+      "data", 
+      "learning", 
+      "science"
+    ], 
+    "digital": [
+      "services", 
+      "sustainability", 
+      "reputation", 
+      "genealogical"
+    ], 
+    "commercial": [
+      "genealogical", 
+      "compliance", 
+      "knowledge", 
+      "privacy", 
+      "process", 
+      "executive", 
+      "commercial", 
+      "sustainability", 
+      "investment"
+    ], 
+    "visibility": [], 
+    "genealogical": [], 
+    "restructuring": [
+      "science", 
+      "design", 
+      "visibility"
+    ], 
+    "operating": [
+      "financial", 
+      "visibility", 
+      "strategy"
+    ], 
+    "services": [
+      "security"
+    ], 
+    "data": [
+      "compliance", 
+      "science", 
+      "executive", 
+      "commercial", 
+      "reputation", 
+      "design", 
+      "innovation", 
+      "security", 
+      "data"
+    ], 
+    "customer": [
+      "information", 
+      "financial", 
+      "administrative", 
+      "visibility", 
+      "genealogical", 
+      "data"
+    ], 
+    "sustainability": [], 
+    "science": [
+      "brand"
+    ], 
+    "compliance": [
+      "web", 
+      "business", 
+      "analytics", 
+      "restructuring", 
+      "operating", 
+      "digital"
+    ], 
+    "experience": [
+      "marketing", 
+      "knowledge", 
+      "human", 
+      "privacy"
+    ], 
+    "communications": [], 
+    "reputation": [], 
+    "security": []
+  }, 
+  "users": [
+    "Michelle", 
+    "Rochella", 
+    "Merl", 
+    "Bonnee", 
+    "Claudette", 
+    "Lelah", 
+    "Leesa", 
+    "Letta", 
+    "Anni", 
+    "Alene", 
+    "Karlotta", 
+    "Adrienne", 
+    "Issy", 
+    "Ediva", 
+    "Olivie", 
+    "Saudra", 
+    "Janeva", 
+    "Minda", 
+    "Deanna", 
+    "Tandi", 
+    "Carolyn", 
+    "Haley", 
+    "Channa", 
+    "Leonanie", 
+    "Carlene", 
+    "Cody", 
+    "Karleen", 
+    "Cloris", 
+    "Ulrike", 
+    "Trix", 
+    "Gianina", 
+    "Ida", 
+    "Kassandra", 
+    "Jobina", 
+    "Sibley", 
+    "Saudra", 
+    "Doloritas", 
+    "Cariotta", 
+    "Teri", 
+    "Rowe", 
+    "Veronike", 
+    "Roby", 
+    "Camella", 
+    "Shaine", 
+    "Uta", 
+    "Clio", 
+    "Sandie", 
+    "Dixie", 
+    "Kit", 
+    "Marcia", 
+    "Tracey", 
+    "Vitia", 
+    "Cissy", 
+    "Pearline", 
+    "Adena", 
+    "Devi", 
+    "Nat", 
+    "Clo", 
+    "Stacia", 
+    "Cornelle", 
+    "Kylen", 
+    "Yolande", 
+    "Otha", 
+    "Nadeen", 
+    "Arden", 
+    "Bethina", 
+    "Cecil", 
+    "Cahra", 
+    "Berty", 
+    "Maridel", 
+    "Noelani", 
+    "Livy", 
+    "Lana", 
+    "Maridel", 
+    "Lyssa", 
+    "Barb", 
+    "Chlo", 
+    "Birgitta", 
+    "Lanie", 
+    "Guillema", 
+    "Melodee", 
+    "Suzanna", 
+    "Claribel", 
+    "Emmaline", 
+    "Korney", 
+    "Revkah", 
+    "Griselda", 
+    "Jill", 
+    "Sibelle", 
+    "Gerty", 
+    "Euphemia", 
+    "Hyacinthia", 
+    "Gayle", 
+    "Leisha", 
+    "Klarrisa", 
+    "Milissent", 
+    "Amalita", 
+    "Nevsa", 
+    "Sonya", 
+    "Elisabet"
+  ], 
+  "roles": [
+    "administrative", 
+    "analytics", 
+    "brand", 
+    "business", 
+    "commercial", 
+    "communications", 
+    "compliance", 
+    "creative", 
+    "customer", 
+    "data", 
+    "design", 
+    "digital", 
+    "diversity", 
+    "content", 
+    "executive", 
+    "experience", 
+    "financial", 
+    "gaming", 
+    "genealogical", 
+    "human", 
+    "information", 
+    "innovation", 
+    "investment", 
+    "knowledge", 
+    "learning", 
+    "marketing", 
+    "operating", 
+    "privacy", 
+    "process", 
+    "product", 
+    "reputation", 
+    "research", 
+    "restructuring", 
+    "risk", 
+    "science", 
+    "security", 
+    "services", 
+    "strategy", 
+    "sustainability", 
+    "technology", 
+    "visibility", 
+    "visionary", 
+    "web"
+  ], 
+  "roleassignment": {
+    "Janeva": [
+      "information", 
+      "product", 
+      "creative"
+    ], 
+    "Marcia": [
+      "content", 
+      "genealogical", 
+      "data", 
+      "experience", 
+      "privacy"
+    ], 
+    "Anni": [
+      "communications"
+    ], 
+    "Karlotta": [
+      "science", 
+      "sustainability", 
+      "creative", 
+      "research"
+    ], 
+    "Amalita": [
+      "gaming", 
+      "genealogical", 
+      "visibility", 
+      "innovation"
+    ], 
+    "Veronike": [
+      "financial"
+    ], 
+    "Sibley": [
+      "process", 
+      "visionary"
+    ], 
+    "Yolande": [
+      "analytics", 
+      "science", 
+      "communications", 
+      "experience", 
+      "digital"
+    ], 
+    "Jill": [
+      "content", 
+      "security", 
+      "research", 
+      "data", 
+      "strategy"
+    ], 
+    "Milissent": [
+      "visibility", 
+      "knowledge", 
+      "human"
+    ], 
+    "Lanie": [
+      "product", 
+      "learning"
+    ], 
+    "Michelle": [
+      "customer", 
+      "communications", 
+      "experience", 
+      "privacy"
+    ], 
+    "Otha": [
+      "product"
+    ], 
+    "Sandie": [
+      "data"
+    ], 
+    "Sibelle": [
+      "sustainability", 
+      "financial", 
+      "diversity", 
+      "communications"
+    ], 
+    "Issy": [
+      "security", 
+      "design"
+    ], 
+    "Cahra": [
+      "process", 
+      "analytics", 
+      "customer", 
+      "privacy"
+    ], 
+    "Channa": [
+      "services", 
+      "science", 
+      "investment", 
+      "experience"
+    ], 
+    "Lelah": [
+      "information", 
+      "data", 
+      "investment", 
+      "research"
+    ], 
+    "Gayle": [
+      "knowledge", 
+      "operating", 
+      "business", 
+      "experience", 
+      "research"
+    ], 
+    "Nadeen": [
+      "customer", 
+      "research"
+    ], 
+    "Nevsa": [
+      "visionary", 
+      "commercial", 
+      "compliance"
+    ], 
+    "Suzanna": [
+      "product"
+    ], 
+    "Cornelle": [
+      "human", 
+      "digital"
+    ], 
+    "Claribel": [
+      "diversity"
+    ], 
+    "Adrienne": [
+      "content", 
+      "digital", 
+      "innovation"
+    ], 
+    "Emmaline": [
+      "restructuring", 
+      "visionary", 
+      "technology", 
+      "creative"
+    ], 
+    "Ediva": [
+      "privacy"
+    ], 
+    "Letta": [
+      "human"
+    ], 
+    "Hyacinthia": [
+      "web", 
+      "commercial"
+    ], 
+    "Teri": [
+      "customer", 
+      "diversity", 
+      "research"
+    ], 
+    "Noelani": [
+      "gaming", 
+      "security", 
+      "operating", 
+      "knowledge"
+    ], 
+    "Olivie": [
+      "process", 
+      "content", 
+      "digital"
+    ], 
+    "Lyssa": [
+      "web"
+    ], 
+    "Saudra": [
+      "content"
+    ], 
+    "Karleen": [
+      "customer", 
+      "visionary", 
+      "operating", 
+      "experience"
+    ], 
+    "Kassandra": [
+      "restructuring", 
+      "visionary", 
+      "business"
+    ], 
+    "Barb": [
+      "sustainability"
+    ], 
+    "Griselda": [
+      "services", 
+      "information"
+    ], 
+    "Clo": [
+      "research"
+    ], 
+    "Bethina": [
+      "analytics", 
+      "creative", 
+      "research"
+    ], 
+    "Sonya": [
+      "content", 
+      "experience", 
+      "human", 
+      "privacy"
+    ], 
+    "Gianina": [
+      "information", 
+      "security", 
+      "risk"
+    ], 
+    "Claudette": [
+      "executive", 
+      "visionary", 
+      "administrative", 
+      "privacy"
+    ], 
+    "Leesa": [
+      "communications", 
+      "operating", 
+      "business", 
+      "visibility"
+    ], 
+    "Doloritas": [
+      "administrative", 
+      "financial", 
+      "design", 
+      "marketing"
+    ], 
+    "Euphemia": [
+      "content", 
+      "creative", 
+      "business", 
+      "digital"
+    ], 
+    "Cariotta": [
+      "creative"
+    ], 
+    "Camella": [
+      "information"
+    ], 
+    "Ulrike": [
+      "content", 
+      "commercial", 
+      "compliance", 
+      "technology", 
+      "learning"
+    ], 
+    "Leisha": [
+      "executive"
+    ], 
+    "Roby": [
+      "genealogical", 
+      "data", 
+      "sustainability"
+    ], 
+    "Tandi": [
+      "information", 
+      "technology"
+    ], 
+    "Melodee": [
+      "analytics", 
+      "design", 
+      "visionary", 
+      "data", 
+      "research"
+    ], 
+    "Uta": [
+      "services", 
+      "genealogical", 
+      "technology", 
+      "administrative"
+    ], 
+    "Lana": [
+      "communications", 
+      "investment", 
+      "human"
+    ], 
+    "Carlene": [
+      "content", 
+      "privacy", 
+      "creative", 
+      "investment", 
+      "innovation"
+    ], 
+    "Devi": [
+      "brand", 
+      "product", 
+      "research"
+    ], 
+    "Berty": [
+      "gaming", 
+      "visionary", 
+      "business"
+    ], 
+    "Livy": [
+      "compliance", 
+      "innovation"
+    ], 
+    "Pearline": [
+      "sustainability", 
+      "data", 
+      "science"
+    ], 
+    "Carolyn": [
+      "communications"
+    ], 
+    "Bonnee": [
+      "analytics", 
+      "executive", 
+      "data", 
+      "business"
+    ], 
+    "Alene": [
+      "gaming", 
+      "restructuring", 
+      "human", 
+      "digital"
+    ], 
+    "Klarrisa": [
+      "security", 
+      "reputation", 
+      "digital", 
+      "privacy"
+    ], 
+    "Dixie": [
+      "customer", 
+      "marketing", 
+      "services", 
+      "experience"
+    ], 
+    "Haley": [
+      "customer", 
+      "genealogical", 
+      "process", 
+      "content"
+    ], 
+    "Kylen": [
+      "visionary", 
+      "commercial"
+    ], 
+    "Merl": [
+      "analytics", 
+      "compliance"
+    ], 
+    "Shaine": [
+      "sustainability", 
+      "gaming"
+    ], 
+    "Cecil": [
+      "content", 
+      "reputation", 
+      "business", 
+      "digital"
+    ], 
+    "Cody": [
+      "gaming", 
+      "risk"
+    ], 
+    "Nat": [
+      "compliance", 
+      "visionary", 
+      "strategy"
+    ], 
+    "Chlo": [
+      "brand", 
+      "technology", 
+      "risk"
+    ], 
+    "Cloris": [
+      "services", 
+      "science", 
+      "information"
+    ], 
+    "Deanna": [
+      "financial", 
+      "restructuring", 
+      "administrative"
+    ], 
+    "Vitia": [
+      "financial"
+    ], 
+    "Rowe": [
+      "experience"
+    ], 
+    "Rochella": [
+      "customer", 
+      "executive", 
+      "visionary", 
+      "financial"
+    ], 
+    "Cissy": [
+      "web", 
+      "restructuring", 
+      "human", 
+      "strategy"
+    ], 
+    "Maridel": [
+      "compliance"
+    ], 
+    "Jobina": [
+      "science", 
+      "reputation", 
+      "experience", 
+      "analytics"
+    ], 
+    "Arden": [
+      "investment"
+    ], 
+    "Kit": [
+      "technology", 
+      "learning", 
+      "research"
+    ], 
+    "Gerty": [
+      "genealogical", 
+      "compliance", 
+      "knowledge", 
+      "science"
+    ], 
+    "Stacia": [
+      "content", 
+      "web", 
+      "administrative", 
+      "privacy"
+    ], 
+    "Birgitta": [
+      "science", 
+      "marketing", 
+      "commercial", 
+      "strategy"
+    ], 
+    "Elisabet": [
+      "analytics", 
+      "business", 
+      "creative"
+    ], 
+    "Tracey": [
+      "diversity", 
+      "communications", 
+      "administrative", 
+      "creative"
+    ], 
+    "Clio": [
+      "sustainability", 
+      "innovation", 
+      "human", 
+      "strategy"
+    ], 
+    "Minda": [
+      "communications", 
+      "business", 
+      "innovation"
+    ], 
+    "Ida": [
+      "product", 
+      "diversity", 
+      "innovation"
+    ], 
+    "Guillema": [
+      "product", 
+      "compliance", 
+      "creative"
+    ], 
+    "Trix": [
+      "content", 
+      "communications", 
+      "marketing", 
+      "business", 
+      "innovation"
+    ], 
+    "Revkah": [
+      "communications", 
+      "commercial", 
+      "experience"
+    ], 
+    "Korney": [
+      "science", 
+      "brand", 
+      "compliance"
+    ], 
+    "Leonanie": [
+      "customer", 
+      "technology"
+    ], 
+    "Adena": [
+      "web", 
+      "privacy", 
+      "data", 
+      "business", 
+      "strategy"
+    ]
+  }
+}
