@@ -1,0 +1,425 @@
+\documentclass{semdoc}
+% Template: $Id: t01_txt.tex,v 1.7 2000/05/23 12:13:37 bless Exp $
+% -----------------------------------------------------------------------------
+%epstopdf ermöglicht, dass eps-Dateien durch pdflatex in windows eingebunden werden können
+\usepackage{epstopdf}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{cleveref}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{lab.bib}
+
+
+% Credits to https://latexcolor.com/ <3
+\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+
+\definecolor{diffstart}{named}{gray}
+\definecolor{diffincl}{named}{green}
+\definecolor{diffrem}{named}{red}
+
+\newcommand*{\Comment}[1]{\hfill\makebox[3.0cm][l]{#1}}%
+ 
+\lstdefinelanguage{diff}{
+    basicstyle=\ttfamily\small,
+    morecomment=[f][\color{diffstart}]{@@},
+    morecomment=[f][\color{diffincl}]{+ },
+    morecomment=[f][\color{diffrem}]{- },
+    backgroundcolor=\color{anti-flashwhite},
+    captionpos=b,
+    breaklines=true, 
+%    escapechar=\&% char to escape out of listings and back to LaTeX
+}
+
+\lstdefinestyle{basic}{
+    backgroundcolor=\color{anti-flashwhite},
+    commentstyle=\color{amaranth},
+    keywordstyle=\color{airforceblue},
+    basicstyle=\ttfamily\small,
+    captionpos=b,
+    breaklines=true, 
+%    escapechar=\&% char to escape out of listings and back to LaTeX
+}
+
+\lstset{
+  style=basic
+ }
+  
+% Report Praktikum 
+% -----------------------------------------------------------------------------
+% Kommentare beginnen mit einem %-Zeichen
+\begin{document}
+% --> Oberhalb der Linie bitte nichts ändern.
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% Stellen, an denen etwas geaendert werden soll, sind wie hier gekennzeichnet.
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+
+%
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% --> Bitte den Titel des Beitrages in die nächste Zeile eintragen:
+\title{Reference Monitor (LSMs)}
+%
+% --> ... und den Namen des Autors:
+\author{Carolin Beer - 1842604}
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+% -----------------------------------------------------------------------------
+
+% Nicht ändern!
+\event{Access Control Systems Lab\\}
+\term{Sommersemester 2020}
+\supervisor{Prof. Dr. Hannes Hartenstein, Jan Grashöfer, Florian Jacob}
+
+%
+%
+\maketitle
+
+\section{Introduction}
+Throughout this report we will learn how to build our own Linux Security Module (LSM). We will be using a custom template and add our new LSM to the Linux kernel.
+
+\section{Preparation}
+As a basis for our LSM, we use the template from \texttt{https://git.scc.kit.edu/dsn-stud-projects/acs-lab/linux.git} which is based upon Linux v4.9.
+\footnote{Note that the source code is not publicly available, but we keep the report as self-contained as possible by including relevant code snippets.}.
+
+We need to build and rebuild a kernel from source several times to include our changes in the LSM. 
+Before starting the build, the \texttt{openssl-devel} and \texttt{elfutils-libelf-devel} dependencies should be installed.
+We then follow the instructions provided by Fedora from \texttt{https://fedoraproject.org/wiki/Building\_a\_custom\_kernel}. 
+The relevant parts are \emph{Configuring the kernel} and \emph{Building the kernel} in Section \emph{Building Vanilla upstream kernel}. 
+
+Importantly, make sure to set \texttt{CONFIG\_SECURITY\_PATH=y} in the \texttt{.config} file after running \texttt{make oldconfig}. Rerun \texttt{make oldconfig}, enable the \texttt{ACS-Lab LSM support} and continue with the usual instructions.
+
+\section{Understanding the ACS-Lab LSM template}
+Let us start by taking a look at the relevant differences between our custom template and the Linux source using \texttt{git diff v4.9}.
+
+The \texttt{EXTRAVERSION} parameter serves as an additional, custom, identifier for the kernel.
+We set it to \texttt{utdrq}, as shown in \cref{mf}.
+
+\begin{lstlisting}[language=diff, label={mf}, caption={Changes in \texttt{Makefile}}]
+-EXTRAVERSION =
++EXTRAVERSION = utdrq
+\end{lstlisting}
+
+The \texttt{acslab\_add\_hook(void)} function is added to the \texttt{lsm\_hooks.h} file in \cref{incl}. 
+Depending on whether the \texttt{CONFIG\_SECURITY\_ACSLAB} variable is defined, the function is either provided externally or defined to be a NOOP.
+
+\begin{lstlisting}[language=diff, label={incl}, caption={Changes in \texttt{include/linux/lsm\_hooks.h}}]
++#ifdef CONFIG_SECURITY_ACSLAB
++extern void __init acslab_add_hooks(void);
++#else
++static inline void __init acslab_add_hooks(void) { }
++#endif
+\end{lstlisting}
+
+In \cref{aKconfig} we can see the information for the ACS-Lab LSM for the kernel configuration.
+To load the contents into the general configuration, it is included as source as seen in \cref{Kconfig}.
+
+\begin{lstlisting}[language=diff, label={aKconfig}, caption={New file \texttt{security/acslab/Kconfig}}]
++config SECURITY_ACSLAB
++	bool "ACS-Lab LSM support"
++	depends on SECURITY_PATH
++	default n
++	help
++	  This module contains an exemplary LSM for the ACS-Lab.
+\end{lstlisting}
+
+\begin{lstlisting}[language=diff, label={Kconfig}, caption={Changes in \texttt{security/Kconfig}}]
++source security/acslab/Kconfig
+\end{lstlisting}
+
+Beyond providing configuration information, we need to include the build object and and add the new subdirectory into the Makefile, as seen in \cref{saMakefile} and \cref{sMakefile}. 
+
+\begin{lstlisting}[label={saMakefile}, language=diff, caption={New file \texttt{security/acslab/Makefile}}]
++obj-$(CONFIG_SECURITY_ACSLAB) += acslab.o
+\end{lstlisting}
+
+\begin{lstlisting}[label={sMakefile}, language=diff, caption={Changes in \texttt{security/Makefile}}]
++subdir-$(CONFIG_SECURITY_ACSLAB)	+= acslab
++obj-$(CONFIG_SECURITY_ACSLAB)		+= acslab/
+\end{lstlisting}
+
+
+The core logic of the new ACS-Lab LSM can be found in \cref{acslab-c}. 
+Its hook functions are defined in the \texttt{acslab\_hooks} array.
+To add and extend the already existing security checks, the \texttt{acslab\_add\_hooks()} function calls \texttt{security\_add\_hooks()} with \texttt{acslab\_hooks} as parameter.
+
+
+\begin{lstlisting}[label={acslab-c},language=diff, caption={New file \texttt{security/acslab/acslab.c} (excerpt)}]
++#define pr_fmt(fmt) "ACS-Lab: " fmt
++
++#include <linux/lsm_hooks.h>
++#include <linux/time64.h>	// timespec64
++#include <linux/time.h>		// timezone
++#include <linux/path.h>		// path
++#include <linux/dcache.h>	// dentry_path
++#include <linux/string.h>	// strnstr
++#include <linux/usb.h>		// USB
+[...]
++static int acslab_settime (const struct timespec64 *ts, const struct timezone *tz)
++{
++	pr_info("settime hooked\n");
++	return 0;
++}
++
++/*** Add hook handler ***/
++
++static struct security_hook_list acslab_hooks[] = {
++	//LSM_HOOK_INIT(path_mkdir, acslab_path_mkdir),
++	LSM_HOOK_INIT(settime, acslab_settime),
++};
++
++void __init acslab_add_hooks(void)
++{
++	pr_info("Hooks have been added!");
++	security_add_hooks(acslab_hooks, ARRAY_SIZE(acslab_hooks));
++}
+\end{lstlisting} 
+
+Lastly, for the \texttt{acslab\_add\_hooks()} function to be actually invoked, it needs to be added to the security modules, as seen in \cref{sec}. 
+
+\begin{lstlisting}[label={sec}, language=diff, caption={Changes in \texttt{security/security.c}}]
++	acslab_add_hooks();
+\end{lstlisting}
+
+Generally, there are two kinds of LSMs, major and minor ones.
+LSMs may use pointers to data structures that are called \emph{Security Blobs}, which are attached to objects by a security module.
+Seucrity Blobs allow to maintain context between hooks which allows for higher-level security policies. 
+Since the Security Blob cannot be shared between modules, access to it is exclusive to a single, major, LSM.
+In contrast, minor LSMs do not rely on Security Blobs, thus, any number of them may be running on a system. 
+LSMs are stacked onto each other. This means that after the Directive Access Control, minor LSMs are called, followed by the major LSM, if existent. Only if all access control mechanisms grant an operation, it is permitted.
+\cite{Sautereau2017} 
+
+Since the ACS-Lab LSM does not make use of a Security Blob and only complements the existing modules, it is a minor LSM. 
+
+\section{Exploring the ACS-Lab LSM}
+% Once you have successfully compiled and started the kernel including the ACS-Lab LSM, it is
+% time to explore what it does. The module will write messages prefixed with “ ACS-Lab: ” into the
+% kernel log. The given template hooks settime .
+% a) Restart the VM, have a look at the kernel log and search for messages of the ACS-Lab
+% LSM. Explain the messages you see or why there are no messages in the log.
+% Hint: To view the kernel log you might use journalctl -k .
+
+After compiling the kernel, the ACS-Lab LSM is now active. 
+As we can see from the source code in \cref{acslab-c}, the LSM hooks \texttt{settime}. 
+Since we know that all messages are prefixed with \texttt{ACS-Lab:}, we can easily filter for relevant messages when using \texttt{journalctl -k}.
+
+\begin{lstlisting}[language=bash, caption={ACS-Lab kernel logs after startup}, label={startup}]
+$ journalctl -k | grep "ACS-Lab:"
+May 24 22:58:29 DSN-ACSLab-Master kernel: ACS-Lab: Hooks have been added!
+May 24 22:58:34 DSN-ACSLab-Master kernel: ACS-Lab: settime hooked
+\end{lstlisting}
+
+As we can see from \cref{startup}, the ACS-Lab LSM hooks have successfully been added, including the \texttt{settime} hook. 
+
+% b) Change the system time and have a look at the log again. Explain your findings.
+% Hint: To change the system time you might use timedatectl . You will have to disable
+% NTP, which is enabled by default on the ACS-Lab VM.
+To test the functionality of the LSM for the \texttt{settime} hook, we now change the system time using \texttt{set-time}.
+
+\begin{lstlisting}[language=bash, caption={Changing the system time invoking the \texttt{settime} hook}, label={settime}]
+$ timedatectl set-time "2000-01-01 00:00"
+$ journalctl -k | grep "ACS-Lab:"
+May 25 18:57:28 DSN-ACSLab-Master kernel: ACS-Lab: Hooks have been added!
+May 25 18:57:33 DSN-ACSLab-Master kernel: ACS-Lab: settime hooked
+Jan 01 00:00:00 DSN-ACSLab-Master kernel: ACS-Lab: settime hooked
+\end{lstlisting} 
+
+As we can see from \cref{settime}, the ACS-Lab LSM has been invoked and the corresponding log message already contains the newly set time and date. 
+
+% c) When the system time is changed, the new timestamp is passed to the settime hook. Add
+% the new timestamp to the log message and recompile the kernel.
+% Hint: Keep in mind to check for null -pointers.
+Now we want to modify the module source code to print the timestamp that is passed to the \texttt{settime} hook to the logs. 
+The modified code is displayed in \cref{code-st}. 
+
+\begin{lstlisting}[language=c, caption={Changed source code in \texttt{security/acslab/acslab.c}}, label={code-st}] 
+static int acslab_settime (const struct timespec64 *ts, const struct timezone *tz)
+{
+        pr_info("settime hooked\n");
+        if (ts) {
+                struct tm new;
+                time64_to_tm(ts->tv_sec, 0, &new);
+                pr_info("received new time (UTC): %ld-%02d-%02d %02d:%02d:%02d\n", 1900 + new.tm_year, 1 + new.tm_mon, new.tm_mday, new.tm_hour, new.tm_min, new.tm_sec);
+        }
+        else {
+                pr_info("timespec is a nullpointer: %p\n", ts);
+        }
+        return 0;
+}
+\end{lstlisting}
+
+After recompiling the kernel to include the modifications, we can now see whether the changes have the desired effect.
+
+\begin{lstlisting}[language=bash, caption={Kernel logs for the \texttt{settime} hook after modifications in the source code}, label={st-mod}]
+$ timedatectl set-time "2000-12-11 11:12"
+$ journalctl -k | grep "ACS-Lab:"
+Feb 20 22:30:21 DSN-ACSLab-Master kernel: ACS-Lab: Hooks have been added!
+Feb 20 22:30:26 DSN-ACSLab-Master kernel: ACS-Lab: settime hooked
+Feb 20 22:30:26 DSN-ACSLab-Master kernel: ACS-Lab: timespec is a nullpointer:           (null)
+Dec 11 11:12:00 DSN-ACSLab-Master kernel: ACS-Lab: settime hooked
+Dec 11 11:12:00 DSN-ACSLab-Master kernel: ACS-Lab: received new time (UTC): 2000-12-11 10:12:00
+$ timedatectl status
+      Local time: Mon 2000-12-11 11:13:35 CET
+  Universal time: Mon 2000-12-11 10:13:35 UTC
+        RTC time: Mon 2000-12-11 10:13:35
+       Time zone: Europe/Berlin (CET, +0100)
+ Network time on: no
+synchronized NTP: no
+ RTC in local TZ: no
+\end{lstlisting}
+
+As we can see from \cref{st-mod}, the logs now include the timestamp that is passed to the hook.
+During system startup the hook is called, but provided with a nullpointer as timestamp. 
+In contrast, the modification of the time using \texttt{set-time} yields an actual timestamp in Coordinated Universal Time (UTC) and the expected logs. 
+
+\section{Preventing the Creation of Directories}
+% Now we will prevent the user from creating directories named dsn . Only in case a “magic” USB
+% device is attached to the system the user should be allowed to create directories named dsn .
+% a) Uncomment the code that implements the path_mkdir hook and explain the two calls to
+% the dentry_path function including their results in ret_dir and ret_path .
+
+Now we want to dive deeper into the source code and not only modify logs, but actually implement some functionality.
+The goal is to tie the permission to create directories named \texttt{dsn} to a specific usb device.
+If the usb device is mounted, the creation shall be granted, if not, denied.
+
+We start by uncommenting the remaining code which has been added to the ACS-Lab LSM template in \texttt{security/acslab/acslab.c}. 
+The contents are shown in \cref{add-code}. 
+
+\begin{lstlisting}[language=c, numbers=left, caption={Additional code in \texttt{security/acslab/acslab.c}}, label={add-code}]
+#define VENDOR_ID 0x0000
+#define PRODUCT_ID 0x0000
+
+static int match_usb_dev(struct usb_device *dev, void *unused)
+{
+	return ((dev->descriptor.idVendor == VENDOR_ID) &&
+		(dev->descriptor.idProduct == PRODUCT_ID));
+}
+
+static int acslab_path_mkdir(const struct path *dir, struct dentry *dentry, umode_t mode)
+{
+	char buf_dir[256];
+	char buf_path[256];
+	char *ret_dir;
+	char *ret_path;
+
+	ret_dir = dentry_path(dir->dentry, buf_dir, ARRAY_SIZE(buf_dir));
+	if (IS_ERR(ret_dir)) {
+		pr_info("mkdir hooked: <failed to retrieve directory>\n");
+		return 0;
+	}
+
+	ret_path = dentry_path(dentry, buf_path, ARRAY_SIZE(buf_path));
+	if (IS_ERR(ret_path)) {
+		pr_info("mkdir hooked: <failed to retrieve path>\n");
+		return 0;
+	}
+
+	pr_info("mkdir hooked: %s in %s\n", ret_path, ret_dir);
+
+	// Add your code here //
+
+	return 0;
+}
+[...]
+static struct security_hook_list acslab_hooks[] = {
+	LSM_HOOK_INIT(path_mkdir, acslab_path_mkdir),
+        [...]
+};
+\end{lstlisting}
+
+As we can see, a new hook for \texttt{path\_mkdir} is now included in the code. 
+From the documentation of the \texttt{lsm\_hooks.h} file in \texttt{include/linux/}, we obtain further information about this hook:
+It checks the permission for the creation of new directories. 
+The argument \texttt{dir} references the path structure of the parent of the new directory, whereas the second argument, \texttt{dentry}, contains the \texttt{dentry}\footnote{\texttt{dentry} is used by Linux kernels to manage file hierarchies in directories} structure of the new directory itself. 
+
+As we learn from \texttt{fs/dcache.c}, the \texttt{dentry\_path()} function returns the full pathname of the \texttt{dentry} object, passed as first argument, from the root. 
+Therefore, the two calls to \texttt{dentry\_path()} in lines 17 and 23 return the full path of the existing directory and the one that is about to be created as values to \texttt{ret\_dir} and \texttt{ret\_path}, respectively.
+
+% For the next step you need a “magic” USB device. We will identify USB devices by vendor
+% ID and product ID. Choose a device, determine its vendor and product ID and update the
+% VENDOR_ID and PRODUCT_ID macros accordingly.
+% b) Prevent the creation of directories named dsn , if your personal “magic” USB device is not
+% attached to the system by adding code to the path_mkdir hook handler. Comment on the
+% security of this approach. Please make sure to include the code you have added into your
+% report.
+% Hint: To check for the existence of an USB device you might use usb_for_each_dev() with
+% match_usb_dev()
+
+We now determine the vendor and product id of some usb device which is supposed to be the 'key' to creating \texttt{dsn} directories.
+
+\begin{lstlisting}[language=bash, caption={Displaying mounted usb devices using \texttt{lsusb}}, label={lsusb}]
+$ lsusb
+Bus 001 Device 004: ID 80ee:0021 VirtualBox USB Tablet
+Bus 001 Device 003: ID 138a:0097 Validity Sensors, Inc. 
+Bus 001 Device 006: ID 05ac:12ab Apple, Inc. iPad 4/Mini1
+Bus 001 Device 001: ID 1d6b:0001 Linux Foundation 1.1 root hub
+\end{lstlisting}
+
+From the mounted devices in \cref{lsusb} we decide to use device number 006. 
+The \texttt{ID} contains the \texttt{VENDOR\_ID} to the left side of the colon and the \texttt{PRODUCT\_ID} to the right side. 
+Therefore, we have \texttt{0x05ac} as \texttt{VENDOR\_ID}, and \texttt{0x12ab} as \texttt{PRODUCT\_ID}. 
+
+We modify the identifiers in the ACS-Lab LSM code and extend it to check for the name of the newly created directory, which can be found in \cref{dsn}.
+If the name equals \texttt{dsn}, we check whether any of the usb devices attached matches our specified identifiers. 
+In case the device was found, the directory creation is granted and therefore the return code $0$ is used, otherwise, $1$ is returned to deny the operation.
+
+\begin{lstlisting}[language=c, caption={Newly added and modified code to restrict the creation of \texttt{dsn} directories}, label={dsn}]
+#define VENDOR_ID 0x05ac
+#define PRODUCT_ID 0x12ab
+[...]
+static int acslab_path_mkdir(const struct path *dir, struct dentry *dentry, umode_t mode)
+{
+        [...]
+	// Add your code here //
+	if (strcmp("dsn", dentry->d_name.name) == 0) {
+		pr_info("mkdir hooked: detected attempt to create protected directory 'dsn'\n");
+		if (usb_for_each_dev(0, match_usb_dev) == 0) {
+			pr_info("mkdir hooked: magic usb not attached, denying mkdir\n");
+			return 1;
+		}
+		pr_info("mkdir hooked: magic usb attached\n"); 
+	}
+	pr_info("mkdir hooked: granting mkdir operation\n");
+	return 0;
+}
+\end{lstlisting}
+
+Now we need to recompile the kernel for the last time to see whether our code works as intended.
+We then try to create \texttt{dsn} directories with and without the usb device attached as seen in \cref{test}.
+
+\begin{lstlisting}[language=bash, caption={Creating directories with and without the dedicated usb device attached}, label={test}]
+
+$ lsusb | grep 05ac:12ab
+Bus 001 Device 005: ID 05ac:12ab Apple, Inc. iPad 4/Mini1
+$ ls | grep "dsn"
+$ mkdir dsn
+$ ls | grep "dsn"
+dsn
+$ rm -rf dsn
+$ ls | grep "dsn"
+$ lsusb | grep 05ac:12ab
+$ mkdir dsn
+$ ls | grep "dsn"
+\end{lstlisting}
+
+As apparent from the behavior of the \texttt{mkdir} command, the code seems to be working.
+The kernel logs in \cref{deny} are consist with this, we have successfully customized the ACS-Lab LSM.
+
+\begin{lstlisting}[language=bash, caption={Kernel logs for the directory creation}, label={deny}]
+May 28 02:43:21 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: detected attempt to create protected directory 'dsn'
+May 28 02:43:21 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: magic usb attached
+May 28 02:43:21 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: granting mkdir operation
+May 28 02:44:07 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: /home/student/dsn in /home/student
+May 28 02:44:07 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: detected attempt to create protected directory 'dsn'
+May 28 02:44:07 DSN-ACSLab-Master kernel: ACS-Lab: mkdir hooked: magic usb not attached, denying mkdir
+\end{lstlisting}
+
+\section{Discussion and Conclusion}
+In this report we have learnt more about customizing LSMs. Given a template of a minor LSM, we have implemented some functionality on our own and restricted the creation of directories. 
+Due to LSM stacking, we could focus solely on writing this custom part of the code, without needing to worry about other parts of the access control.
+
+\printbibliography
+
+\end{document}
+%%% end of document
