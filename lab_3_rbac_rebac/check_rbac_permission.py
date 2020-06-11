@@ -3,14 +3,19 @@ import json
 
 # Checks whether role inherits one of the targets according to hierarchy
 def is_inheriting(role: str, targets: list, hierarchy: dict) -> bool:
-    for target in targets:
-        if role in hierarchy[role]: 
-            return True     
+    visited = {role: True}
+    cands = [role]
 
-    # Check for transitive inheritance
-    for cand in hierarchy[role]:
-        if is_inheriting(cand, targets, hierarchy):
-            return True
+    while len(cands) != 0:
+        cand = cands.pop()
+        for t in targets:
+            if t in hierarchy[cand]: 
+                return True     
+
+        for el in hierarchy[cand]:
+            if el not in visited:
+                visited[el] = True
+                cands.append(el)
     return False
 
 # Returns list of roles that a user possesses
@@ -25,6 +30,7 @@ def get_targets(res: str, perm_ass: str) -> list:
     for r in perm_ass:
         if r["name"] == res: 
             return r["pa"]
+    raise Exception(f"resource {res} does not exist")
 
 # Returns boolean, indicating whether a user has the permission to access the object
 def has_permission(usr: str, res: str, perms: dict) -> bool:
@@ -32,12 +38,14 @@ def has_permission(usr: str, res: str, perms: dict) -> bool:
     targets = get_targets(res, perms["permissionassignment"])
 
     for role in roles:
-        if is_inheriting(role, targets):
+        if is_inheriting(role, targets, perms["rolehierarchy"]):
             return True
     return False
 
 def main():
-    assert len(sys.argv) == 3
+    if not len(sys.argv) == 3:
+        raise Exception(f"expected 3 arguments, got {len(sys.argv)}")
+
     usr = sys.argv[1]
     res = sys.argv[2]
     with open("./rbac.json") as f:
