@@ -1,0 +1,60 @@
+{
+  "usergraph": {
+    "Willy": {
+        "friends": [
+            "Melina", 
+            "Juliana"
+         ],
+        "coworkers": [
+            "Hilary"
+         ]
+      },
+    "Melina": {
+        "friends": [
+            "Willy"
+       ]
+    },
+    "Juliana": {
+        "friends": [
+            "Willy"
+        ]
+     },
+    "Hilary": {
+        "coworkers": [
+            "Willy"
+         ]
+      }
+  }, 
+  "resources": [
+    {
+      "controller": "Hilary", 
+      "name": "Afghanistan", 
+      "target": [ 
+        "Melina"
+      ]
+    }, 
+    {
+      "controller": "Melina", 
+      "name": "Aland Islands", 
+      "target": [
+        "Asia"
+      ]
+    } 
+  ], 
+  "users": [
+    "Willy",
+    "Hilary",
+    "Juliana",
+    "Melina"
+  ], 
+  "policies": {
+    "Willy": {
+      "tup": "f=2", 
+      "trp": "f>3"
+    }, 
+    "Hilary": {
+      "tup": "f>3", 
+      "trp": "f<1 & c=1"
+    }
+  }
+}
