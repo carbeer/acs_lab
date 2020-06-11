@@ -9,8 +9,8 @@ import logging
 version = 0 
 
 ops = {
-        "<": operator.le,
-        ">": operator.ge,
+        "<": operator.lt,
+        ">": operator.gt,
         "=": operator.eq,
     }
 
@@ -69,9 +69,11 @@ def get_policy_per_user(usr: str, res: str, perm: dict) -> list:
     if ctrl is None:
         raise Exception("recource does not exist")
 
-    trp, tup = perm["policies"][ctrl]["trp"], perm["policies"][ctrl]["tup"]
-    pol_user = list(zip([tup] * len(targets), targets))
-    pol_user.append((trp, ctrl))
+    pol_user = [(perm["policies"][ctrl]["trp"], ctrl)]
+
+    for t in targets:
+        pol_user.append((perm["policies"][t]["tup"], t))
+
     for el in pol_user: logging.debug(el) 
     return pol_user 
 
@@ -102,7 +104,7 @@ def shortest_path(source: str, sink: str, cb: callable, usrs: list, usr_graph: d
 def eval_partial_policy(usr: str, tgt: str, limit: int, op: callable, cb: callable, perm: dict) -> bool:   
     d =  shortest_path(usr, tgt, cb, perm["users"], perm["usergraph"])
     # Evaluates whether distance *operator (</>/=)* *value defined by policy*
-    logging.debug(f"partial policy for target {tgt} with limit {limit} evaluated to {op(d,limit)}")
+    logging.debug(f"partial policy for target {tgt} with {op.__name__} {limit} evaluated to {op(d,limit)}")
     return op(d, limit)
 
 # Evaluates a single policy. A single policy is only True is all of its atomic parts are True.
@@ -132,11 +134,13 @@ def has_permission(usr: str, res: str, op: str, perm: dict) -> bool:
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    assert len(sys.argv) == 4
+    if not len(sys.argv) == 4:
+        raise Exception(f"expected 4 arguments, got {len(sys.argv)}")
     usr = sys.argv[1]
     res = sys.argv[2]
     op = sys.argv[3].upper()
-    assert op in ["ALL", "ANY"]
+    if not op in ["ALL", "ANY"]:
+        raise Exception(f"last argument must be ANY or ALL, got {op}")
 
     with open(config[version]) as f:
         perm = json.load(f)
