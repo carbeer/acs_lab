@@ -1,0 +1,319 @@
+\documentclass{semdoc}
+% Template: $Id: t01_txt.tex,v 1.7 2000/05/23 12:13:37 bless Exp $
+% -----------------------------------------------------------------------------
+%epstopdf ermöglicht, dass eps-Dateien durch pdflatex in windows eingebunden werden können
+\usepackage{epstopdf}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{lab.bib}
+
+\usepackage[acronym]{glossaries}
+\newacronym{rbac}{RBAC}{Role-Based Access Control}
+\newacronym{rebac}{ReBAC}{Relationship-Based Access Control}
+\newacronym{tup}{TUP}{Target User Policy}
+\newacronym{trp}{TRP}{Target Resource Policy}
+\newacronym{bfs}{BFS}{Breadth First Search}
+\usepackage{cleveref}
+
+% Credits to https://latexcolor.com/ <3
+\definecolor{amaranth}{rgb}{0.9, 0.17, 0.31}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}\definecolor{anti-flashwhite}{rgb}{0.95, 0.95, 0.96}
+
+\newcommand*{\Comment}[1]{\hfill\makebox[3.0cm][l]{#1}}%
+\lstset{language=python,
+    backgroundcolor=\color{anti-flashwhite},
+    commentstyle=\color{amaranth},
+    keywordstyle=\color{airforceblue},
+    numbers=left,
+    basicstyle=\ttfamily\small,
+	captionpos=b,
+	breaklines=true, 
+  	escapechar=\&% char to escape out of listings and back to LaTeX
+}
+
+% Report Praktikum 
+% -----------------------------------------------------------------------------
+% Kommentare beginnen mit einem %-Zeichen
+\begin{document}
+% --> Oberhalb der Linie bitte nichts ändern.
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% Stellen, an denen etwas geaendert werden soll, sind wie hier gekennzeichnet.
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+
+%
+% ---------------------------------------------------------------------------
+% \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+% --> Bitte den Titel des Beitrages in die nächste Zeile eintragen:
+\title{RBAC \& ReBAC}
+%
+% --> ... und den Namen des Autors:
+\author{Carolin Beer - 1842604}
+% /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ /\ 
+% -----------------------------------------------------------------------------
+
+% Nicht ändern!
+\event{Access Control Systems Lab\\}
+\term{Sommersemester 2020}
+\supervisor{Prof. Dr. Hannes Hartenstein, Jan Grashöfer, Florian Jacob}
+
+
+%
+\maketitle
+
+\section{Introduction}
+In this report, we implement both a \gls{rbac} and a \gls{rebac} policy decision point, i.e. a function which decides whether access to a resource is granted. The underlying data is provided as JSON documents.
+Furthermore, we explore the relation of \gls{rbac} and \gls{rebac} by transforming a simple \gls{rbac} instance into a \gls{rebac} instance. 
+%---------------------------------------------------------------------------
+
+\section{RBAC}
+% \gls{rbac} decides whether or not to grant access to resources based on \emph{Roles}. Users are assigned to certain roles.
+
+In this section, we write a Hierarchical \gls{rbac} instance based on a JSON file \texttt{rbac.json}, which has a data structure with the following five elements:
+\begin{itemize}
+  \item \texttt{users}: contains all users in the system
+  \item \texttt{roles}: contains all roles in the system
+  \item \texttt{roleassignment}: for each user, contains a list of roles that they are assigned to
+  \item \texttt{rolehierarchy}: for each role, contains a list of roles from which it inherits permissions
+  \item \texttt{permissionassignment}: for each resource, contains a dictionary specifying its \texttt{name} as string, and the list of roles \texttt{pa} that are permitted to access it.
+\end{itemize}
+
+To evaluate the \gls{rbac} instance, we write a script called \texttt{check\_rbac\_permission.py} which takes two arguments as input. Firstly, the name of the requesting user, and secondly, the name of the requested resource.
+We want our implementation to print the access decision to the console.
+
+After parsing the JSON file and the comand line arguments, the function of the script, \texttt{has\_permission()} is called. 
+The parsed parameters of the requesting user \texttt{usr}, the requested resource \texttt{res}, and the parsed JSON file \texttt{perm}, are passed as arguments. 
+
+The code \texttt{has\_permission()} is depicted in \cref{permission}.
+
+\begin{lstlisting}[float, language=python, label={permission}, caption={\texttt{has\_permission()} for the RBAC instance}]
+# Returns boolean, indicating whether a user has the permission to access the object
+def has_permission(usr: str, res: str, perms: dict) -> bool:
+    roles = get_roles(usr, perms["roleassignment"])
+    targets = get_targets(res, perms["permissionassignment"])
+
+    for role in roles:
+        if is_inheriting(role, targets, perms["rolehierarchy"]):
+            return True
+    return False
+\end{lstlisting}
+
+The function first retrieves the roles of the requesting user using \texttt{get\_roles()} and the roles that are granted access to the resource using \texttt{get\_targets()}.
+Subsequently, it is checked whether any of the roles of the user inherits any of the roles that are granted access to the resource (targets) in \texttt{is\_inheriting()}.
+
+The semantics of \texttt{is\_inheriting()} are defined in a way that the function returns \texttt{True}, if the role itself is among the target roles as it (reflexively) inherits its own permissions, or if the role (transitively) inherits their permissions of one of them. 
+The function keeps track of roles that were explored already, so that each role is visited as most once for each call of \texttt{is\_inheriting()}. 
+The complexity of it is therefore in $O(r)$ where $r$ is the number of roles.  
+
+Since a single role that has or inherits the permissions to access a resource suffices to gain permission, \texttt{has\_permission()} returns as soon as a call of \texttt{is\_inheriting()} returns \texttt{True}.
+If all of the calls return \texttt{False}, \texttt{has\_permission()} returns \texttt{False} as well.
+As \texttt{has\_permission()} calls \texttt{is\_inheriting()} at most once for every role that the user is assigned to, which is bounded by $r$, the overall complexity of a permission check is in $O(r^2)$.
+%---------------------------------------------------------------------------
+
+\section{ReBAC}
+In this section, we model an instance of \gls{rebac}. 
+It differs from \gls{rbac} in the way access decisions are evaluated. 
+Instead of having roles, a user graph is used that models relationships.
+
+For a requesting user that wants to access a resource, several policies must be evaluated. 
+Firstly, the \gls{trp} of the user that owns a resource, must be considered. It specifies constraints on the length of the path between the requesting and controlling user.
+Then, similarly, the \gls{tup} of each target user of a resource must be evaluated.
+Since there may be conflicting policy decisions, we also need a conflict resolution mechanism.
+Followingly, we will use \texttt{ANY} and \texttt{ALL} as mechanisms, which permit access to a resource if any of the policies is satisfied, or all of the policies are satisfied, respectively.
+
+The data structure of the input JSON file \texttt{rebac.json} differs from the one that we used for the \gls{rbac} instance and now has the following format:
+
+\begin{itemize}
+  \item \texttt{users}: contains a list of all users in the system
+  \item \texttt{usergraph}: for each user, contains a list of their friends
+  \item \texttt{policies}: for each user, contains the \gls{tup} \texttt{tup} and the \gls{trp} \texttt{trp}. Both policies follow the format \texttt{"h"[<|=|>][0-9]}.
+  \item \texttt{resources}: for each resource, contains a dictionary with \texttt{name}, controlling user \texttt{controller} and a list of target users \texttt{target}
+\end{itemize}
+
+To implement a \gls{rebac} instance, we write a script called \texttt{check\_rebac\_permission.py}. 
+The script now takes three arguments: the requesting user, the name of the resource and the conflict resolution policy.
+
+Again, after loading the JSON file and parsing the command line arguments, \texttt{has\_permission()} is called. 
+The parameters are the requesting user \texttt{usr}, the requested resource \texttt{res}, the operation to resolve conflicting policies \texttt{op} and the parsed JSON file \texttt{perm}.
+
+
+\begin{lstlisting}[float, language=python, label={rebac_has_perm}, caption={\texttt{has\_permission()} function for the ReBAC instance}]
+# Evaluates whether usr should have access to res. Uses op to resolve conflicting policy decisions.
+def has_permission(usr: str, res: str, op: str, perm: dict) -> bool: 
+    break_cond = (True if op == "ANY" else False) 
+    for pol, tgt in get_policy_per_user(usr, res, perm):
+        if eval_policy(pol, usr, tgt, perm) == break_cond:
+            return break_cond
+    return not break_cond 
+\end{lstlisting}
+
+The code in \cref{rebac_has_perm} shows the inner workings of the implementation. 
+Using the function \texttt{get\_policy\_per\_user()}, we retrieve a list of tuples, each containing a \gls{trp} or \gls{tup} policy \texttt{pol} as a string, and the user \texttt{tgt} that it must be evaluated for.
+We iterate over these tuples and evaluate each of the policies and corresponding user with respect to the requesting user in \texttt{eval\_policy()}. 
+A break condition for the loop, which is either \texttt{True} (for \texttt{ANY}) or \texttt{False} (for \texttt{ALL}), is adapted to the chosen conflict resolution operator.
+If the policy evaluates to the value defined in that break condition, we can immediately return the overall access decision.
+
+Now let us take a closer look at \texttt{eval\_policy()}, which can be found in \cref{eval-rebac}.
+
+\begin{lstlisting}[float, language=python, label={eval-rebac}, caption={\texttt{eval\_policy()} function for the ReBAC instance}]
+# Evaluates a single policy
+def eval_policy(pol: str, usr: str, tgt: str, perm: dict) -> bool:
+    pat = re.compile('h(>|<|=)([0-9])') 
+    m = pat.match(pol)
+    if not m or not len(m.groups()) == 2:
+      raise Exception(f"invalid policy formatting: {pol}")
+    strop, limit = m.groups() 
+    op = ops[strop]
+    d = shortest_path(usr, tgt, perm["users"], perm["usergraph"])
+    # Evaluates whether (d *operator (</>/=)* limit)
+    if not op(d, int(limit)):
+        return False
+    return True
+\end{lstlisting}
+
+To evaluate a single policy, we first need to extract the relevant information from the string, this is done in lines 3--8. 
+We then have the operator \texttt{op} which is a function that compares two parameters, using one of the operations \texttt{<,=,>}, depending on the policy. Furthermore, \texttt{limit} contains the distance specified by the policy.
+To evaluate the policy, we need to compute the distance between \texttt{usr} and \texttt{tgt}. This is done using \gls{bfs} in \texttt{shortest\_path()}. 
+\gls{bfs} has a complexity of $O(|E|+|V|)$. Since we have at most $u^2$ edges between $u$ users in the graph, this part of the implementation is in $O(u^2)$.
+
+Having the distance \texttt{d}, we can now evaluate the policy using \texttt{op} and the \texttt{limit} specified by the policy and return the policy decision.
+The complexity of the \gls{bfs} dominates the complexity of \texttt{eval\_policy()}.
+
+Since \texttt{has\_permission()} calls \texttt{eval\_policy()} for every \texttt{target} or \texttt{controller} user at most once, and the number of these users is bounded by $u$, the overall complexity is $O(u^3)$. 
+However, this complexity could be easily reduced to $O(n^2)$ by reusing results from the \gls{bfs} search.
+
+%---------------------------------------------------------------------------
+
+While we have analyzed a very basic version of \gls{rebac}, it is possible to implement more complex policies.
+For instance, it is possible to use different types of connections in the user graph and then to specify policies with respect to the connection type.
+
+We are now exploring the semantics and the syntax of a sample extension of the previously shown code \footnote{While we are not analyzing the code for this extension, you can find the source code that works with and without the extension at \url{https://pastebin.com/Lpy53av5}.}.
+
+We want to have two kinds of relationships, friends and coworkers, for which we both want to create policies. 
+Therefore, we need to change the data structure of the JSON file, we now call it \texttt{rebac\_extended.json}. 
+It builds on the data structure from the previous \gls{rebac} instance, with the following modifications.
+
+Firstly, the \texttt{usergraph} now contains another layer of nesting. 
+For each user, we now have a dictionary, containing the attributes \texttt{friends} and \texttt{coworkers}, each containing the list of users that correspond to that relationship.
+
+Next, the \texttt{trp} and \texttt{tup} policies have a different format, i.e. the policy description language changes. 
+Policies may not be empty, and they can contain one or two parts, specifying the distance relation between friends and/or coworkers in the format \texttt{"f"[<|=|>][0-9]} and \texttt{"c"[<|=|>][0-9]}, respectively. 
+If two parts are used, they are connected by a \texttt{\&}. 
+
+Using this definition, the semantics of the extended \gls{rebac} instance slightly change. 
+The policy evaluation is changes so that it only returns \texttt{True} if all of its parts fulfill the corresponding relations in the user graph. 
+Apart from that, policy conflicts can still be resolved using both, \texttt{ANY} and \texttt{ALL}.
+
+
+\section{RBAC as ReBAC}
+Let us now consider the relationship between a non-hierarchical \gls{rbac} and \gls{rebac} instance.
+We will usr the example \gls{rbac} instance given in \cref{rbac} and try to transform it into a \gls{rebac} instance, step by step.
+
+\begin{lstlisting}[float, language=bash, label={rbac}, caption={Example of a non-hierarchical RBAC instance}]
+{
+  "permissionassignment": [
+    {
+      "pa": [
+        "innovation"
+      ], 
+      "name": "Albania"
+    },
+    {
+      "pa": [
+        "human"
+      ], 
+      "name": "Belgium"
+    }
+  ], 
+  "users": [
+    "Michelle", 
+    "Lelah"
+  ], 
+  "roles": [
+        "innovation"
+        "human"
+  ], 
+  "roleassignment": {
+    "Michelle": [
+      "human"
+    ], 
+    "Lelah": [
+      "innovation"
+    ]
+  }
+}
+\end{lstlisting}
+
+As we can see, \texttt{Michelle} has the role \texttt{human} and can thus access the resource \texttt{Belgium}. Ananalogeously, \texttt{Lelah} can access \texttt{Albania} through her assigned role \texttt{innovation}.
+
+To ensure that these restrictions are represented in the \gls{rebac} instance, we can add one user in the \gls{rebac} per \texttt{role} in the \gls{rbac}.
+Additionally, the existing \texttt{users} from the \gls{rbac} are preserved in the \gls{rebac}. 
+To represent the role assignment, we can now introduce relationships between the previous \texttt{role} and the users that got the role assigned, in the \texttt{usergraph}, as shown in \cref{rebac1}.
+
+\begin{lstlisting}[float, language=bash, label={rebac1}, caption={Transferring roles and users from RBAC to a ReBAC instance}]
+  "usergraph": {
+    "Michelle": [
+        "human"    
+    ],
+    "Lelah": [
+        "innovation"
+    ],
+    "human": [
+        "Michelle"
+    ],
+    "innovation": [
+        "Lelah"
+    ]
+  }, 
+  "users": [
+    "Michelle",
+    "Lelah",
+    "human",
+    "innovation",
+  ], 
+\end{lstlisting}
+
+The resources from the \gls{rbac} \texttt{permissionassignment} can be transferred into \texttt{resources} in the \gls{rebac}. Since there are no controlling users in \gls{rbac}, we leave the \texttt{controller} attribute out. 
+To restrict access to resources, the previous \texttt{roles} are added as \texttt{target} users. 
+Additionally, we need to create one policy per previous \texttt{role}. The \texttt{tup} value is set to \texttt{h=1} for each of them. 
+With this policy, it is ensured that accessing users are directly connected to the previous \texttt{role} in the \texttt{usergraph}. 
+This can be found in \cref{rebac2}.
+
+\begin{lstlisting}[float, language=bash, label={rebac2}, caption={Transferring access restrictions for resources from RBAC to a ReBAC instance}]
+  "resources": [
+    {
+      "name": "Albania", 
+      "target": [ 
+        "innovation"
+      ]
+    }, 
+    {
+      "name": "Belgium",
+      "target": [
+        "human"
+      ]
+    }
+  ], 
+  "policies": {
+    "human": {
+      "tup": "h=1"
+    },
+    "innovation": {
+      "tup": "h=1"
+    }
+  }
+\end{lstlisting}
+
+
+Lastly, the conflict resolution policy should be set to \texttt{ANY} to allow \texttt{users} possessing any of the required \texttt{target} relations, to access the resource.
+
+\section{Discussion and Conclusion}
+In the given report, we have seen implementations of both a \gls{rbac} and a \gls{rebac} instance and given an example on how the \gls{rebac} instance could be extended to make it more expressive.
+Lastly, we converted a non-hierarchical \gls{rbac} instance into a \gls{rebac} instance for exemplary data. 
+
+
+\printbibliography
+
+\end{document}
+%%% end of document

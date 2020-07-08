@@ -37,7 +37,7 @@
       "controller": "Melina", 
       "name": "Aland Islands", 
       "target": [
-        "Asia"
+        "Willy"
       ]
     } 
   ], 
@@ -54,6 +54,10 @@
     }, 
     "Hilary": {
       "tup": "f>3", 
+      "trp": "f<1 & c=1"
+    },
+    "Melina": {
+      "tup": "f>2", 
       "trp": "f<1 & c=1"
     }
   }

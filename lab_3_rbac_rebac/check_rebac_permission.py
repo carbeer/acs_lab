@@ -5,8 +5,8 @@ import re
 import operator
 import logging
 
-# 0 for assignment 2.1, 1 for assignment 2.2
-version = 0 
+# 0 for assignment 2, 1 for assignment 3
+version = 0
 
 ops = {
         "<": operator.lt,
@@ -57,7 +57,6 @@ config = [
         "./rebac_extended.json",
     ]
 
-
 # Returns the policies with the corresponding user as a list of tuples of structure (policy, user)
 def get_policy_per_user(usr: str, res: str, perm: dict) -> list:
     
@@ -103,7 +102,7 @@ def shortest_path(source: str, sink: str, cb: callable, usrs: list, usr_graph: d
 # Evaluates an (atomic) part of a single policy 
 def eval_partial_policy(usr: str, tgt: str, limit: int, op: callable, cb: callable, perm: dict) -> bool:   
     d =  shortest_path(usr, tgt, cb, perm["users"], perm["usergraph"])
-    # Evaluates whether distance *operator (</>/=)* *value defined by policy*
+    # Evaluates whether d *operator (</>/=)* limit
     logging.debug(f"partial policy for target {tgt} with {op.__name__} {limit} evaluated to {op(d,limit)}")
     return op(d, limit)
 
@@ -120,7 +119,7 @@ def eval_policy(pol: str, usr: str, tgt: str, perm: dict) -> bool:
                 if not eval_partial_policy(usr, tgt, int(limit), ops[op], cb, perm):
                     return False
         if not evaled:
-            raise Exception(f"invalid policy formatting: {pt}")
+            raise Exception(f"invalid policy formatting: {pt}. please check the version parameter in the source code.")
     logging.debug(f"policy {pol} evaluated to True")
     return True
 
