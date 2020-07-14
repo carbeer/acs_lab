@@ -51,6 +51,14 @@ class Script:
                 matches += 1
         self.push_data(matches)
 
+    def rotate(self):
+        self.stack.rotate()
+
+    def is_or(self):
+        el1 = self.pop_data()
+        el2 = self.pop_data()
+        self.persist_result(el1 or el2)
+
 # Entry point
 
     def exec(self, lines):
@@ -63,6 +71,8 @@ class Script:
         ("PUSHDATA", push_data),
         ("COUNTPASSWORDS", count_pws),
         ("ISGREATEREQUAL", is_geq),
+        ("ROTATE", rotate),
+        ("OR", is_or), 
         ("#", no_op)
     })
 

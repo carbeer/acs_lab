@@ -19,11 +19,7 @@ class PolEvaluatorTest(unittest.TestCase):
                     "ISEQUAL"
                     ]
 
-            s = Script()
-            s.exec(rs)
-            s.exec(ps)
-            self.assertEqual(s.stack[-1], test[2])
-        
+            self.exec(rs, ps, test[2]) 
     
         
 
@@ -33,27 +29,64 @@ class PolEvaluatorTest(unittest.TestCase):
                (["pwwhatever", "pw2"], ["pw1", "pw2", "pw3"], "3 2", "2", False)
                 ]
         for test in tests: 
-            rs = []
-            ps = []
+            rs = [
+                    f"PUSHDATA {test[0][0]}",
+                    f"PUSHDATA {test[0][1]}",
+                    "# READ"
+                ]
+            ps = [
+                    f"PUSHDATA {test[1][0]}",
+                    f"PUSHDATA {test[1][1]}",
+                    f"PUSHDATA {test[1][2]}",
+                    f"COUNTPASSWORDS {test[2]}",
+                    f"ISGREATEREQUAL {test[3]}"
+                ]
+        
+            self.exec(rs, ps, test[4])
 
+
+    def test_t3(self):
+        tests = [
+               (["pw1", "pw2", None],["mpw", "pw1", "pw2", "pw3"], "3 2", "2", True),
+               (["pwwhatever", "pw2", None], ["mpw", "pw1", "pw2", "pw3"], "3 2", "2", False),
+               ([None, None, "mpw"], ["mpw","pw1", "pw2", "pw3"], "3 2", "2", True),
+               ([None, None, "somempw"], ["mpw","pw1", "pw2", "pw3"], "3 2", "2", False)
+                ]
+        
+        for test in tests:
+            rs = [
+                    f"PUSHDATA {test[0][0]}",
+                    f"PUSHDATA {test[0][1]}",
+                    f"PUSHDATA {test[0][2]}",
+                    "# READ"
+                ]
+
+            rs = []
             for pw in test[0]:
-                rs.append(f"PUSHDATA {pw}") 
+                rs.append(f"PUSHDATA {pw}")
             rs.append("# READ")
 
-            for pw in test[1]:
-                ps.append(f"PUSHDATA {pw}")
-            ps.append(f"COUNTPASSWORDS {test[2]}")
-            ps.append(f"ISGREATEREQUAL {test[3]}")
+            ps = [
+                    f"PUSHDATA {test[1][0]}",
+                    f"ISEQUAL",
+                    f"ROTATE",
+                    f"PUSHDATA {test[1][1]}",
+                    f"PUSHDATA {test[1][2]}",
+                    f"PUSHDATA {test[1][3]}",
+                    f"COUNTPASSWORDS {test[2]}",
+                    f"ISGREATEREQUAL {test[3]}",
+                    "OR"
+            ]
+            
+            self.exec(rs, ps, test[4])
 
+    def exec(self, rs, ps, expected):
             s = Script()
             s.exec(rs)
             print(s.stack)
             s.exec(ps)
             print(s.stack)
-            self.assertEqual(s.stack[-1], test[4])
-
-
-            
+            self.assertEqual(s.stack[-1], expected)
                     
             
         
