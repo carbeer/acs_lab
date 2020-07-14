@@ -1,0 +1,5 @@
+PUSHDATA Password1SpecifiedByOwner
+PUSHDATA Password2SpecifiedByOwner
+PUSHDATA Password3SpecifiedByOwner
+COUNTPASSWORDS 3 2
+ISGREATEREQUAL 2
