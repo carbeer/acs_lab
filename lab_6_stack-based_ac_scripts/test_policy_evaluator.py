@@ -80,6 +80,28 @@ class PolEvaluatorTest(unittest.TestCase):
             
             self.exec(rs, ps, test[4])
 
+
+    def test_t4(self):
+        tests = [
+                ("pw", 231, True),
+                ("pw",Script.fake_hash("pw") , True),
+                ("pw",Script.fake_hash("whatever") , False)
+                ]
+
+        for test in tests:
+            rs = [
+                    f"PUSHDATA {test[0]}",
+                    "# READ"
+                ]
+            ps = [
+                    "HASH",
+                    f"PUSHDATA {test[1]}",
+                    "ISEQUAL"
+                ]
+
+            self.exec(rs, ps, test[2])
+
+
     def exec(self, rs, ps, expected):
             s = Script()
             s.exec(rs)

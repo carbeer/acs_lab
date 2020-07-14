@@ -2,7 +2,6 @@ import sys
 import logging
 from collections import deque
 
-
 class Script:
 
     def __init__(self):
@@ -17,12 +16,22 @@ class Script:
     def persist_result(self, s: str):
         logging.info(f"result: {s}")
         self.push_data(s)
-
-    def no_op(self, _):
-        pass
- 
+        
     def pop_data(self) -> str:
         return self.stack.pop()
+
+    @classmethod
+    def no_op(cls, _):
+        pass
+ 
+    @classmethod
+    def real_hash(cls, s: str):
+        return str(hash(s))
+
+    @classmethod
+    def fake_hash(cls, s: str):
+        return str(sum([ord(x) for x in s])) # collision through reordering 
+
 
 # Operator implementation
 
@@ -30,10 +39,9 @@ class Script:
         self.stack.append(data)
 
     def is_equal(self):
-        a = self.pop_data()
+        a = self.pop_data() 
         b = self.pop_data()
-        eval = (a==b)
-        self.persist_result(eval)
+        self.persist_result(a==b) 
 
     def is_geq(self, val: str):
         self.persist_result(self.pop_data() >= int(val))
@@ -59,6 +67,10 @@ class Script:
         el2 = self.pop_data()
         self.persist_result(el1 or el2)
 
+    def hash_elem(self):
+        el = self.pop_data()
+        self.push_data(self._HASH(el))
+
 # Entry point
 
     def exec(self, lines):
@@ -73,9 +85,11 @@ class Script:
         ("ISGREATEREQUAL", is_geq),
         ("ROTATE", rotate),
         ("OR", is_or), 
-        ("#", no_op)
+        ("HASH", hash_elem), 
+        ("#", no_op.__func__)
     })
 
+    _HASH = fake_hash.__func__
 
 def main():
     if not len(sys.argv) == 3:
