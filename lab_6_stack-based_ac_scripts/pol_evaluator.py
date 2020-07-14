@@ -61,6 +61,11 @@ class Script:
 
     def rotate(self):
         self.stack.rotate()
+        
+    def is_and(self):
+        el1 = self.pop_data()
+        el2 = self.pop_data()
+        self.persist_result(el1 and el2)
 
     def is_or(self):
         el1 = self.pop_data()
@@ -70,6 +75,15 @@ class Script:
     def hash_elem(self):
         el = self.pop_data()
         self.push_data(self._HASH(el))
+
+    def duplicate(self):
+        el = self.pop_data()
+        self.push_data(el)
+        self.push_data(el)
+
+    def is_not(self):
+        el = self.pop_data()
+        self.push_data(not el)
 
 # Entry point
 
@@ -84,12 +98,15 @@ class Script:
         ("COUNTPASSWORDS", count_pws),
         ("ISGREATEREQUAL", is_geq),
         ("ROTATE", rotate),
+        ("DUP", duplicate),
         ("OR", is_or), 
         ("HASH", hash_elem), 
+        ("AND", is_and),
+        ("NOT", is_not),
         ("#", no_op.__func__)
     })
 
-    _HASH = fake_hash.__func__
+    _HASH = fake_hash.__func__ # real_hash as alternative, will break tests due to missing collisions
 
 def main():
     if not len(sys.argv) == 3:

@@ -101,6 +101,35 @@ class PolEvaluatorTest(unittest.TestCase):
 
             self.exec(rs, ps, test[2])
 
+    def test_t5(self):
+        tests = [
+                ("somepw", "someotherpw", False),
+                ("somepw", "pwsome", True),
+                ("somepw", "somepw", False)
+                ]
+        ps = [
+                    "DUP",
+                    "HASH",
+                    "ROTATE",
+                    "ROTATE",
+                    "DUP",
+                    "ROTATE",
+                    "HASH",
+                    "ISEQUAL",
+                    "ROTATE",
+                    "ISEQUAL",
+                    "NOT",
+                    "AND"
+                ]
+
+        for test in tests:
+            rs = [
+                    f"PUSHDATA {test[0]}",
+                    f"PUSHDATA {test[1]}",
+                    "# READ"
+                ] 
+
+            self.exec(rs, ps, test[2])
 
     def exec(self, rs, ps, expected):
             s = Script()

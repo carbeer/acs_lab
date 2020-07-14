@@ -1,0 +1,3 @@
+PUSHDATA someA
+PUSHDATA Asome
+# READ
